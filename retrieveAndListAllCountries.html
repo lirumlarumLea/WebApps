@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Show Data</title>
+    <style>
+        table, th {
+            font-size: 10pt;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="lib/browserShims.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="lib/errorTypes.js"></script>
+    <script src="lib/Enumeration.js"></script>
+    <script src="src/c/initialize.js"></script>
+    <script src="src/m/Country.js"></script>
+    <script src="src/v/retrieveAndListData.js"></script>
+    <script type="text/javascript">
+      window.addEventListener( "load",
+          pl.v.retrieveAndListData.setupUserInterface );
+    </script>
+</head>
+<body>
+<h3>Country data in storage</h3>
+<br/>
+<div>
+    <table id="countryOutput">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Population</th>
+            <th>Life Expectancy</th>
+            <th>Religions</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<footer><a href="index.html">Back to start</a></footer>
+</body>
+</html>

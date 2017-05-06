@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Simple Country Database</title>
+    <script src="lib/browserShims.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="lib/errorTypes.js"></script>
+    <script src="lib/Enumeration.js"></script>
+    <script src="src/c/initialize.js"></script>
+    <script src="src/m/Country.js"></script>
+    <script type="text/javascript">
+      window.addEventListener( "load",
+          Country.retrieveAllSaved );
+      window.addEventListener( "beforeunload",
+          Country.saveAllData );
+    </script>
+</head>
+<body>
+<h3>Simply Country Data Management App</h3>
+<p>This simple web app for managing country information was developed using the
+    <a href="http://web-engineering.info/tech/JsFrontendApp/minimal-tutorial.html">
+        Minimal App Tutorial</a>
+    by Prof. Gerd Wagner.</p>
+
+<div>
+    <p><em>Please choose an action:</em></p><br/>
+
+    <button type="button"
+            onclick="window.location.href='retrieveAndListAllCountries.html';">
+        List all countries
+    </button>
+    <button type="button" onclick="window.location.href='addCountry.html';">
+        Add a country
+    </button>
+    <br/>
+    <button type="button" onclick="window.location.href='updateCountry.html';">
+        Update a country's data
+    </button>
+
+    <button type="button" onclick="window.location.href='deleteCountry.html';">
+        Delete a country from memory
+    </button>
+    <br/>
+    <button type="button" onclick="Country.clearAllData();">
+        Clear database
+    </button>
+    <button type="button" onclick="Country.createTestData();">
+        Create test data
+    </button>
+    <br/>
+</div>
+</body>
+</html>
