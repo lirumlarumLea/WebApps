@@ -8,7 +8,9 @@
     <script src="lib/errorTypes.js"></script>
     <script src="lib/Enumeration.js"></script>
     <script src="src/c/initialize.js"></script>
+    <script src="src/c/app.js"></script>
     <script src="src/m/Country.js"></script>
+    <script src="src/m/InternationalOrganisation.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load",
           Country.retrieveAllSaved );
@@ -42,13 +44,25 @@
         Delete a country from memory
     </button>
     <br/>
-    <button type="button" onclick="Country.clearAllData();">
+    <button type="button" onclick="pl.c.app.clearData()">
         Clear database
     </button>
-    <button type="button" onclick="Country.createTestData();">
+    <button type="button" onclick="pl.c.app.createTestData()">
         Create test data
     </button>
     <br/>
+    <button type="button" onclick="window.location.href='retrieveAndListAllIntOrgs.html';">
+        List all International Organisations
+    </button>
+    <button type="button" onclick="window.location.href='addInternationalOrganisation.html';">
+        Add an International Organisations
+    </button>
+    <button type="button" onclick="window.location.href='updateInternationalOrganisation.html';">
+        Update an International Organisations data
+    </button>
+    <button type="button" onclick="window.location.href='deleteInternationalOrganisations.html';">
+        Delete an International Organisations data
+    </button>
 </div>
 </body>
 </html>
