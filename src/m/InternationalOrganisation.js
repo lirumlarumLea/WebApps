@@ -142,6 +142,7 @@ class InternationalOrganisation {
    */
   static createTestData() {
     // errors don't need to be caught here, they are handled in the add method
+    //not needed since creating test data is handled in c.app
     this.add( {
       _acronym: "UN",
       _name: "United nations"
@@ -173,8 +174,10 @@ class InternationalOrganisation {
   }
   
   toString() {
-    let str = "Acronym: " + this.acronym + "\n\tFull name: " + this.name + "" +
-        "\n\tMembers: " + this.members;
+    let str = "Acronym: " + this.acronym + "\n\tFull name: " + this.name;
+    if (this.members) {
+      str += ("\n\tMembers: " + this.members.toString());
+    }
     return str;
   }
   

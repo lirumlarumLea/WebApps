@@ -10,8 +10,8 @@
     <script src="src/c/initialize.js"></script>
     <script src="src/m/Country.js"></script>
     <script src="src/v/addCountry.js"></script>
-    <script src="src/m/InternationalOrganisation.js.js"></script>
-    <script src="src/v/internationalOrganisations.js.js"></script>
+    <script src="src/m/InternationalOrganisation.js"></script>
+    <script src="src/v/internationalOrganisations.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load", pl.v.addInternationalOrganisation.setupUserInterface );
       //TODO update to new params, if necessary add form fields
@@ -20,15 +20,10 @@
 <body><h3>Add an International Organisation to the storage</h3>
 
 <div>
-    <form id="countryInput">
-        <label>Name: <input id="cName"/></label><br/>
-        <label>Code: <select id="cCode"></select><br/></label>
-        <label>Population: <input id="cPopulation"/></label><br/>
-        <label><em>Life Expectancy:</em>
-            <input id="cLifeExpectancy"/></label><br/>
-        <fieldset id="cReligions">
-            <legend>Religion</legend>
-        </fieldset>
+    <form id="internationalOrganisationInput">
+        <label>Acronym: <input id="ioAcronym"/></label><br/>
+        <label>Name: <input id="ioName"/></label><br/>
+        <select multiple="multiple" id="ioSelMembers"></select>
         <br/>
         <button type="button" id="saveBtn">Save</button>
     </form>

@@ -41,17 +41,20 @@ pl.c.app = {
       
       InternationalOrganisation.add( {
         _acronym: "UN",
-        _name: "United nations"
+        _name: "United nations",
+        _members: ["Germany", "France", "Russia"]
       } );
   
       InternationalOrganisation.add( {
         _acronym: "WHO",
-        _name: "World Health Organisation"
+        _name: "World Health Organisation",
+        _members: ["Germany", "France", "Russia"]
       } );
   
       InternationalOrganisation.add( {
         _acronym: "NATO",
-        _name: "North Atlantic Treaty Organization"
+        _name: "North Atlantic Treaty Organization",
+        _members: ["Germany", "France"]
       } );
   
       Country.saveAllData();

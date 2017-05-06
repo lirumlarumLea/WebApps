@@ -14,6 +14,7 @@ pl.v.retrieveAndListInternationalOrganisations = {
     let table = document.getElementById( "internationalOrganisationsOutput" );
     let keys, key, i, row;
     
+    Country.retrieveAllSaved();
     InternationalOrganisation.retrieveAllSaved();
     keys = Object.keys( InternationalOrganisation.instances );
     
@@ -47,21 +48,31 @@ pl.v.retrieveAndListInternationalOrganisations = {
 pl.v.addInternationalOrganisation = {
   setupUserInterface: function () {
     //noinspection JSLint
-    const inputForm = document.forms["internationalOrganisationInput"]; //how to add Countries?
+    const inputForm = document.forms["internationalOrganisationInput"],
+        mulSelMembers = document.getElementById("ioSelMembers");
     
+    Country.retrieveAllSaved();
     InternationalOrganisation.retrieveAllSaved();
+  
+    util.fillSelectWithOptions( Country.instances, mulSelMembers, "name", "name");
     
     // check fields on input
     inputForm["ioAcronym"].addEventListener( "input", function () {
       inputForm["ioAcronym"].setCustomValidity(
           InternationalOrganisation.checkAcronymAsId( inputForm["ioAcronym"].value ).message );
     } );
-    
+  
     inputForm["ioName"].addEventListener( "input", function () {
       inputForm["ioName"].setCustomValidity(
           InternationalOrganisation.checkName(
-               inputForm["ioName"].value ).message );
+              inputForm["ioName"].value ).message );
     } );
+    //Not useful, since it is impossible to select a false value
+    /*inputForm["ioSelMembers"].addEventListener( "input", function () {
+      inputForm["ioSelMembers"].setCustomValidity(
+          InternationalOrganisation.checkMembers(
+              inputForm["ioSelMembers"].value ).message );
+    } );*/
     
     // save new internationalOrganisation according to current input in fields
     inputForm["saveBtn"].addEventListener( "click",
@@ -79,23 +90,29 @@ pl.v.addInternationalOrganisation = {
   
   handleSaveButtonClickEvent: function () {
     //noinspection JSLint
-    const inputForm = document.forms["internationalOrganisationInput"];
+    const inputForm = document.forms["internationalOrganisationInput"],
+        mulSelMembers = document.getElementById("ioSelMembers"),
+        arr = [];
+  
+    //loop through the select element and add to array
+    for ( var i = 0; i < mulSelMembers.selectedOptions.length; i+=1) {
+      arr.push( mulSelMembers.selectedOptions[i].value);
+    };
     
     const slots = {
       acronym: inputForm["ioAcronym"].value,
-      name: inputForm["ioName"].value
+      name: inputForm["ioName"].value,
+      members: arr
     };
   
     inputForm["ioAcronym"].setCustomValidity(
         InternationalOrganisation.checkAcronymAsId( slots.acronym ).message );
     inputForm["ioName"].setCustomValidity(
         InternationalOrganisation.checkName( slots.name ).message );
-    
-    
     if (inputForm.checkValidity()) {
       InternationalOrganisation.add( slots );
       alert( "New internationalOrganisation added:\n" +
-          InternationalOrganisation.instances[slots.name].toString() );
+          InternationalOrganisation.instances[slots.acronym].toString() );
       inputForm.reset();
     }
   }
@@ -115,7 +132,7 @@ pl.v.updateInternationalOrganisation = {
     InternationalOrganisation.retrieveAllSaved();
     
     util.fillSelectWithOptions( InternationalOrganisation.instances, selInternationalOrganisation, "acronym", "acronym" );
-    util.fillSelectWithOptions( Country.instances, mulSelMembers, "members", "members");
+    util.fillSelectWithOptions( Country.instances, mulSelMembers, "name", "name");
     
     
     // check fields on input
