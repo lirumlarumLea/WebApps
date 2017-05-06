@@ -127,8 +127,9 @@ pl.v.updateInternationalOrganisation = {
     const formObj = document.forms["internationalOrganisationUpdate"],
         //selInternationalOrganisation = document.getElementById( "selName" ),
         selInternationalOrganisation = document.getElementById( "selAcronym" ),
-        mulSelMembers = document.getElementById("selMembers");
+        mulSelMembers = document.getElementById("ioSelMembers");
     
+    Country.retrieveAllSaved();
     InternationalOrganisation.retrieveAllSaved();
     
     util.fillSelectWithOptions( InternationalOrganisation.instances, selInternationalOrganisation, "acronym", "acronym" );
@@ -139,10 +140,6 @@ pl.v.updateInternationalOrganisation = {
     formObj["ioName"].addEventListener( "input", function () {
       formObj["ioName"].setCustomValidity(
           InternationalOrganisation.checkName( formObj["ioName"].value ).message );
-    });
-    formObj["ioMembers"].addEventListener( "input", function () {
-      formObj["ioMembers"].setCustomValidity(
-          InternationalOrganisation.checkMembers( formObj["ioMembers"].value ).message );
     });
     // neutralize the submit event
     formObj.addEventListener( "submit", function (e) {
@@ -172,8 +169,9 @@ pl.v.updateInternationalOrganisation = {
     if (internationalOrganisation) {
       document.getElementById( "ioAcronym" ).value = internationalOrganisation.acronym;
       document.getElementById( "ioName" ).value = internationalOrganisation.name;
-      document.getElementById( "ioMembers").value = internationalOrganisation.members;
-      ["ioAcronym", "ioName", "ioMembers"].forEach(
+      //fill multipleSelect with Values
+      util.selectMultipleValues(document.getElementById( "ioSelMembers"), internationalOrganisation.members);
+      ["ioAcronym", "ioName"].forEach(
           function (p) {
             // delete custom validation error message which may have been set
             // before
@@ -189,18 +187,23 @@ pl.v.updateInternationalOrganisation = {
     const slots = {};
     let userConfirmed;
     //noinspection JSLint
-    const formObj = document.forms["internationalOrganisationUpdate"];
+    const formObj = document.forms["internationalOrganisationUpdate"],
+        mulSelMembers = document.getElementById("ioSelMembers"),
+        arr=[];
     
-    slots.acronym = formObj.selectInternationalOrganisation.value;
+    //loop through the select element and add to array to assign
+    for ( var i = 0; i < mulSelMembers.selectedOptions.length; i+=1) {
+      arr.push( mulSelMembers.selectedOptions[i].value);
+    }
+    
+    slots.acronym = document.getElementById( "ioAcronym").value;
     slots.name = document.getElementById( "ioName" ).value;
-    slots.members = document.getElementById( "ioMembers"). value;
+    slots.members = arr;
     
     // check all newly entered values
-    formObj["ioAcronym"].setCustomValidity(
-        InternationalOrganisation.checkAcronymAsId( slots.acronym ).message );
     formObj["ioName"].setCustomValidity(
         InternationalOrganisation.checkName( slots.name ).message );
-    formObj["ioMembers"].setCustomValidity(
+    formObj["ioSelMembers"].setCustomValidity(
         InternationalOrganisation.checkMembers( slots.members ).message );
     
     // confirm update with user
