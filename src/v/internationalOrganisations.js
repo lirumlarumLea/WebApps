@@ -227,12 +227,13 @@ pl.v.updateInternationalOrganisation = {
 
 pl.v.deleteInternationalOrganisation = {
   setupUserInterface: function () {
-    let selInternationalOrganisation, deleteBtn, keys;
+    const selInternationalOrganisation = document.getElementById( "selAcronym"),
+        deleteBtn = document.getElementById( "deleteBtn");
     
-    selInternationalOrganisation = document.getElementById( "selectInternationalOrganisation" );
-    deleteBtn = document.getElementById( "deleteBtn" );
+    Country.retrieveAllSaved();
     InternationalOrganisation.retrieveAllSaved();
-    keys = Object.keys( InternationalOrganisation.instances );
+    
+    const keys = Object.keys( InternationalOrganisation.instances );
     console.log( "keys[0]= " + keys );
     util.fillSelectWithOptions( InternationalOrganisation.instances, selInternationalOrganisation, "acronym", "acronym" );
     
@@ -246,7 +247,7 @@ pl.v.deleteInternationalOrganisation = {
   handleDeleteBtnClickEvent: function () {
     let select, valuesChecked;
     
-    select = document.getElementById( "selectInternationalOrganisation" );
+    select = document.getElementById( "selAcronym" );
     
     // confirm delete with user
     valuesChecked = confirm( InternationalOrganisation.instances[select.value].toString()

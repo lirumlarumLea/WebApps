@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Delete International Organisation</title>
+    <script src="lib/browserShims.js"></script>
+    <script src="lib/util.js"></script>
+    <script src="lib/errorTypes.js"></script>
+    <script src="lib/Enumeration.js"></script>
+    <script src="src/c/initialize.js"></script>
+    <script src="src/m/Country.js"></script>
+    <script src="src/m/InternationalOrganisation.js"></script>
+    <script src="src/v/internationalOrganisations.js"></script>
+    <script type="text/javascript">
+      window.addEventListener( "load", pl.v.deleteInternationalOrganisation.setupUserInterface );
+    </script>
+</head>
+<body>
+<h3>Delete entry of an international Organisation</h3>
+<div>
+    <p>Please select the international Organisation you want to remove from storage.</p>
+    <form id="internationalOrganisationDelete">
+        <label>Choose an international Organisation:
+            <select id="selAcronym">
+                <option value="">./.</option>
+            </select>
+        </label>
+        <button type="button" id="deleteBtn">Delete</button>
+    </form>
+</div>
+<footer>
+    <a href="index.html">Back to start</a>
+</footer>
+</body>
+</html>
