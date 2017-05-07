@@ -160,6 +160,20 @@ class Country {
    */
   destroy() {
     let countryName = this.name;
+    let internationalOrganisation=null, keys, i, j;
+    //delete all references to this country in the international Organisations
+    keys = Object.keys( InternationalOrganisation.instances);
+    console.log(keys);
+    console.log(InternationalOrganisation.instances);
+    for (i=0; i<keys.length; i+=1) {
+      internationalOrganisation = InternationalOrganisation.instances[keys[i]];
+      //loop through the array to delete the right element
+      for (j = 0; j < internationalOrganisation.members.length; j += 1) {
+        if (internationalOrganisation.members[j] === countryName) {
+          delete internationalOrganisation.members[j];
+        }
+      }
+    }
     delete Country.instances[this.name];
     delete this;
     console.log( "Country " + countryName + " deleted." );

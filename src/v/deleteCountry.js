@@ -11,8 +11,10 @@ pl.v.deleteCountry = {
     selCountry = document.getElementById( "selectCountry" );
     deleteBtn = document.getElementById( "deleteBtn" );
     Country.retrieveAllSaved();
+    InternationalOrganisation.retrieveAllSaved();
     keys = Object.keys( Country.instances );
     console.log( "keys[0]= " + keys );
+    console.log( Object.keys( InternationalOrganisation.instances));
     util.fillSelectWithOptions( Country.instances, selCountry, "name", "name" );
     
     deleteBtn.addEventListener( "click",
