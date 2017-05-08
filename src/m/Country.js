@@ -146,8 +146,8 @@ class Country {
     if (newCountry) {
       
       Country.instances[newCountry.name] = newCountry;
-      console.log( "Country " + newCountry.name + " updated. New data:\n"
-          + newCountry.toString() );
+      console.log( "Country " + newCountry.name + " updated. New data:\n" +
+        newCountry.toString() );
     } else {
       this.add( oldCountry );
       console.log( "The country " + slots.name + " could not be created." );
@@ -175,7 +175,7 @@ class Country {
       }
     }
     delete Country.instances[this.name];
-    delete this;
+
     console.log( "Country " + countryName + " deleted." );
     
   }
@@ -208,6 +208,7 @@ class Country {
   /**
    * adds some countries to the app so functionality can be tested
    */
+  /*
   static createTestData() {
     // errors don't need to be caught here, they are handled in the add method
     this.add( {
@@ -238,20 +239,21 @@ class Country {
     } );
     
     Country.saveAllData();
-  }
+  }*/
   
   
   /**
    * clears all country data in the localStorage and instead sets an empty
    * object string
    */
+  /*
   static clearAllData() {
     if (confirm( "Do you want to clear all data?" )) {
       Country.instances = {};
       localStorage.setItem( "countries", "{}" );
       console.log( "Database cleared." );
     }
-  }
+  }*/
   
   
   toString() {
@@ -384,7 +386,7 @@ class Country {
           " specified population.", myPopulation );
     }
     return new NoConstraintViolation( myPopulation );
-  };
+  }
   
   set population(newPopulation) {
     const validationResult = Country.checkPopulation( newPopulation );
@@ -417,7 +419,7 @@ class Country {
         return new NoConstraintViolation( myLifeExpect );
       }
     }
-  };
+  }
   
   set lifeExpectancy(newLifeExpectancy) {
     const validationResult = Country.checkLifeExpectancy( newLifeExpectancy );
@@ -440,8 +442,8 @@ class Country {
       for (let i = 0; i < myReligions.length; i += 1) {
         if (!util.isIntegerOrIntegerString( myReligions[i] ) ||
             myReligions[i] < 0 || myReligions[i] > ReligionEL.MAX) {
-          return new RangeConstraintViolation( "The religion " + myReligions[i]
-              + " is unknown.", myReligions );
+          return new RangeConstraintViolation( "The religion " +
+            myReligions[i] + " is unknown.", myReligions );
         }
       }
     }

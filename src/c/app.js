@@ -5,7 +5,8 @@
 /*
 var pl = {
   m: {},
-  v: { addCountry:{}, deleteCountry: {}, retrieveAndListData: {}, updateCountry: {}, internationalOrganisations: {}},
+  v: { addCountry:{}, deleteCountry: {}, retrieveAndListData: {},
+    updateCountry: {}, internationalOrganisations: {}},
   c: { initialize: {}}
 };*/
 
@@ -63,6 +64,7 @@ pl.c.app = {
       console.log( e.constructor.name + ": " + e.message);
     }
   },
+
   clearData: function() {
     try {
       Country.instances = {};

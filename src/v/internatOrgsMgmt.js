@@ -5,10 +5,10 @@
 
 "use strict";
 
-/**********************************************
- * Use case List International Organisations
- **********************************************/
-
+/**
+ * retrieves all international organisations from storage and lists them in
+ * the UI
+ */
 pl.v.retrieveAndListInternationalOrganisations = {
   setupUserInterface: function () {
     let table = document.getElementById( "internationalOrganisationsOutput" );
@@ -21,13 +21,16 @@ pl.v.retrieveAndListInternationalOrganisations = {
     for (i = 0; i < keys.length; i += 1) {
       key = keys[i];
       row = table.insertRow( -1 ); // -1 adds row at the end of the table
-      row.insertCell( -1 ).innerHTML = InternationalOrganisation.instances[key].acronym;
-      row.insertCell( -1 ).innerHTML = InternationalOrganisation.instances[key].name;
+      row.insertCell( -1 ).innerHTML =
+        InternationalOrganisation.instances[key].acronym;
+      row.insertCell( -1 ).innerHTML =
+        InternationalOrganisation.instances[key].name;
       //optional values
       let memCell = row.insertCell( -1 );
       if (InternationalOrganisation.instances[key].members) {
         
-        let memStr = "", memArr = InternationalOrganisation.instances[key].members;
+        let memStr = "", memArr =
+          InternationalOrganisation.instances[key].members;
         
         for (let i = 0; i < memArr.length; i += 1) {
           memStr += memArr[i];
@@ -41,25 +44,26 @@ pl.v.retrieveAndListInternationalOrganisations = {
     }
   }
 };
-/**********************************************
- * Use case Create International Organisations
- **********************************************/
 
+/**
+ * handles adding of international organisations from ui
+ */
 pl.v.addInternationalOrganisation = {
   setupUserInterface: function () {
-    //noinspection JSLint
     const inputForm = document.forms["internationalOrganisationInput"],
         mulSelMembers = document.getElementById("ioSelMembers");
     
     Country.retrieveAllSaved();
     InternationalOrganisation.retrieveAllSaved();
   
-    util.fillSelectWithOptions( Country.instances, mulSelMembers, "name", "name");
+    util.fillSelectWithOptions( Country.instances, mulSelMembers,
+      "name", "name");
     
     // check fields on input
     inputForm["ioAcronym"].addEventListener( "input", function () {
       inputForm["ioAcronym"].setCustomValidity(
-          InternationalOrganisation.checkAcronymAsId( inputForm["ioAcronym"].value ).message );
+          InternationalOrganisation.checkAcronymAsId(
+            inputForm["ioAcronym"].value ).message );
     } );
   
     inputForm["ioName"].addEventListener( "input", function () {
@@ -84,7 +88,8 @@ pl.v.addInternationalOrganisation = {
     } );
     
     // save all data when window/tab is closed
-    window.addEventListener( "beforeunload", InternationalOrganisation.saveAllData );
+    window.addEventListener( "beforeunload",
+      InternationalOrganisation.saveAllData );
     
   },
   
@@ -117,13 +122,12 @@ pl.v.addInternationalOrganisation = {
     }
   }
 };
-/**********************************************
- * Use case Update International Organisation
- **********************************************/
 
+/**
+ * handles the users updated values for an international organisation
+ */
 pl.v.updateInternationalOrganisation = {
   setupUserInterface: function () {
-    //noinspection JSLint
     const formObj = document.forms["internationalOrganisationUpdate"],
         //selInternationalOrganisation = document.getElementById( "selName" ),
         selInternationalOrganisation = document.getElementById( "selAcronym" ),
@@ -132,14 +136,17 @@ pl.v.updateInternationalOrganisation = {
     Country.retrieveAllSaved();
     InternationalOrganisation.retrieveAllSaved();
     
-    util.fillSelectWithOptions( InternationalOrganisation.instances, selInternationalOrganisation, "acronym", "acronym" );
-    util.fillSelectWithOptions( Country.instances, mulSelMembers, "name", "name");
+    util.fillSelectWithOptions( InternationalOrganisation.instances,
+      selInternationalOrganisation, "acronym", "acronym" );
+    util.fillSelectWithOptions( Country.instances, mulSelMembers,
+      "name", "name");
     
     
     // check fields on input
     formObj["ioName"].addEventListener( "input", function () {
       formObj["ioName"].setCustomValidity(
-          InternationalOrganisation.checkName( formObj["ioName"].value ).message );
+          InternationalOrganisation.checkName(
+            formObj["ioName"].value ).message );
     });
     // neutralize the submit event
     formObj.addEventListener( "submit", function (e) {
@@ -149,28 +156,33 @@ pl.v.updateInternationalOrganisation = {
     // after every new change of selection, form needs to change
     // -> listener needed
     selInternationalOrganisation.addEventListener( "change",
-        pl.v.updateInternationalOrganisation.handleInternationalOrganisationSelectEvent );
+        pl.v.updateInternationalOrganisation.
+          handleInternationalOrganisationSelectEvent );
     
     // save new internationalOrganisation data
     formObj.saveBtn.addEventListener( "click",
         pl.v.updateInternationalOrganisation.handleSaveBtnClickEvent );
     
     // save all data when window/tab is closed
-    window.addEventListener( "beforeunload", InternationalOrganisation.saveAllData );
+    window.addEventListener( "beforeunload",
+      InternationalOrganisation.saveAllData );
   },
   
   // updates the values in the input/output fields
   handleInternationalOrganisationSelectEvent: function () {
-    //noinspection JSLint
     const formObj = document.forms["internationalOrganisationUpdate"];
     const selectedAcronym = document.getElementById( "selAcronym" ).value;
-    const internationalOrganisation = InternationalOrganisation.instances[selectedAcronym];
+    const internationalOrganisation =
+      InternationalOrganisation.instances[selectedAcronym];
     
     if (internationalOrganisation) {
-      document.getElementById( "ioAcronym" ).value = internationalOrganisation.acronym;
-      document.getElementById( "ioName" ).value = internationalOrganisation.name;
+      document.getElementById( "ioAcronym" ).value =
+        internationalOrganisation.acronym;
+      document.getElementById( "ioName" ).value =
+        internationalOrganisation.name;
       //fill multipleSelect with Values
-      util.selectMultipleValues(document.getElementById( "ioSelMembers"), internationalOrganisation.members);
+      util.selectMultipleValues(document.getElementById( "ioSelMembers"),
+        internationalOrganisation.members);
       ["ioAcronym", "ioName"].forEach(
           function (p) {
             // delete custom validation error message which may have been set
@@ -181,12 +193,13 @@ pl.v.updateInternationalOrganisation = {
       formObj.reset();
     }
   },
-  
-  // saves the possibly altered values
+
+  /**
+   * saves the possibly altered values
+   */
   handleSaveBtnClickEvent: function () {
     const slots = {};
     let userConfirmed;
-    //noinspection JSLint
     const formObj = document.forms["internationalOrganisationUpdate"],
         mulSelMembers = document.getElementById("ioSelMembers"),
         arr=[];
@@ -221,10 +234,10 @@ pl.v.updateInternationalOrganisation = {
     
   }
 };
-/**********************************************
- * Use case Delete Book
- **********************************************/
 
+/**
+ * Use case Delete International organisation
+ */
 pl.v.deleteInternationalOrganisation = {
   setupUserInterface: function () {
     const selInternationalOrganisation = document.getElementById( "selAcronym"),
@@ -235,13 +248,15 @@ pl.v.deleteInternationalOrganisation = {
     
     const keys = Object.keys( InternationalOrganisation.instances );
     console.log( "keys[0]= " + keys );
-    util.fillSelectWithOptions( InternationalOrganisation.instances, selInternationalOrganisation, "acronym", "acronym" );
+    util.fillSelectWithOptions( InternationalOrganisation.instances,
+      selInternationalOrganisation, "acronym", "acronym" );
     
     deleteBtn.addEventListener( "click",
         pl.v.deleteInternationalOrganisation.handleDeleteBtnClickEvent );
     
     // save all data on window/tab closed
-    window.addEventListener( "beforeunload", InternationalOrganisation.saveAllData );
+    window.addEventListener( "beforeunload",
+      InternationalOrganisation.saveAllData );
     
   },
   handleDeleteBtnClickEvent: function () {
@@ -250,8 +265,8 @@ pl.v.deleteInternationalOrganisation = {
     select = document.getElementById( "selAcronym" );
     
     // confirm delete with user
-    valuesChecked = confirm( InternationalOrganisation.instances[select.value].toString()
-        + "\nDo you wish to delete this entry?" );
+    valuesChecked = confirm( InternationalOrganisation.instances[select.value].
+      toString() + "\nDo you wish to delete this entry?" );
     if (valuesChecked) {
       InternationalOrganisation.instances[select.value].destroy();
       select.remove( select.selectedIndex );

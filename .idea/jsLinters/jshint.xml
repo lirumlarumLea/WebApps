@@ -19,6 +19,7 @@
     <option es3="false" />
     <option es5="false" />
     <option esnext="false" />
+    <option esversion="6" />
     <option evil="false" />
     <option expr="false" />
     <option forin="false" />
@@ -28,11 +29,12 @@
     <option gcl="false" />
     <option globalstrict="false" />
     <option immed="false" />
+    <option indent="2" />
     <option iterator="false" />
     <option jasmine="false" />
     <option jquery="false" />
     <option lastsemic="false" />
-    <option latedef="false" />
+    <option latedef="true" />
     <option laxbreak="false" />
     <option laxcomma="false" />
     <option loopfunc="true" />
@@ -62,7 +64,7 @@
     <option proto="false" />
     <option prototypejs="false" />
     <option qunit="false" />
-    <option quotmark="false" />
+    <option quotmark="true" />
     <option rhino="false" />
     <option scripturl="false" />
     <option shadow="false" />
