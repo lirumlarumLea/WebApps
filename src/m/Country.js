@@ -101,7 +101,7 @@ class Country {
    * back to objects
    */
   static retrieveAllSaved() {
-    console.log( "Data retrieval entered." );
+    console.log( "Country data retrieval entered." );
     
     let allCountriesString = "{}", allCountries, keys, i;
     try {
@@ -112,7 +112,8 @@ class Country {
         console.log( "No countries in storage." );
       }
     } catch (e) {
-      console.log( "Error when retrieving data from LocalStorage:\n" + e );
+      console.log( "Error when retrieving country data from " +
+        "LocalStorage:\n" + e );
     }
     
     allCountries = JSON.parse( allCountriesString );
@@ -193,12 +194,12 @@ class Country {
     }
     catch
         (e) {
-      alert( "Data could not be saved!\n" + e );
+      alert( "Country data could not be saved!\n" + e );
       error = true;
     }
     
     if (error) {
-      console.log( "Error when saving data!" );
+      console.log( "Error when saving country data!" );
     } else {
       console.log( "Data saved: " + localStorage.getItem( "countries" ) );
     }
@@ -297,7 +298,6 @@ class Country {
     let constraintViolation = Country.checkName( myId );
     
     // continue testing only if previous test successful
-    //noinspection JSLint
     if (constraintViolation instanceof NoConstraintViolation) {
       if (!myId) {
         constraintViolation = new MandatoryValueConstraintViolation(
@@ -313,7 +313,6 @@ class Country {
   set name(newName) {
     const validationResult = Country.checkNameAsId( newName );
     
-    //noinspection JSLint
     if (validationResult instanceof NoConstraintViolation) {
       this._name = newName; // only valid values should enter the database
     } else {

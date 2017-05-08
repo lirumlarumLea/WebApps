@@ -5,7 +5,7 @@
 /*
 var pl = {
   m: {},
-  v: { addCountry:{}, deleteCountry: {}, retrieveAndListData: {},
+  v: { addCountry:{}, deleteCountry: {}, retrieveAndListCountries: {},
     updateCountry: {}, internationalOrganisations: {}},
   c: { initialize: {}}
 };*/

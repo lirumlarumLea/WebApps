@@ -8,7 +8,6 @@
 
 pl.v.addCountry = {
   setupUserInterface: function () {
-    //noinspection JSLint
     const inputForm = document.forms["countryInput"],
         selectCode = inputForm["cCode"],
         fldSetReligion = document.getElementById( "cReligions" ),
@@ -62,7 +61,6 @@ pl.v.addCountry = {
   },
   
   handleSaveButtonClickEvent: function () {
-    //noinspection JSLint
     const inputForm = document.forms["countryInput"],
         fldSetReligion = document.getElementById( "cReligions" );
     

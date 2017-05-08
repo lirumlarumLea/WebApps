@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <title>Show Data</title>
@@ -14,25 +14,21 @@
     <script src="lib/errorTypes.js"></script>
     <script src="lib/Enumeration.js"></script>
     <script src="src/c/initialize.js"></script>
-    <script src="src/m/Country.js"></script>
-    <script src="src/v/listCountries.js"></script>
+    <script src="src/m/City.js"></script>
+    <script src="src/v/listCities.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load",
-          pl.v.retrieveAndListCountries.setupUserInterface );
+        pl.v.retrieveAndListCities.setupUserInterface );
     </script>
 </head>
 <body>
-<h3>Country data in storage</h3>
+<h3>City data in storage</h3>
 <br/>
 <div>
-    <table id="countryOutput">
+    <table id="cityOutput">
         <thead>
         <tr>
             <th>Name</th>
-            <th>Code</th>
-            <th>Population</th>
-            <th>Life Expectancy</th>
-            <th>Religions</th>
         </tr>
         </thead>
     </table>

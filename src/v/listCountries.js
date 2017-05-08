@@ -5,7 +5,7 @@
  */
 "use strict";
 
-pl.v.retrieveAndListData = {
+pl.v.retrieveAndListCountries = {
   setupUserInterface: function () {
     let table = document.getElementById( "countryOutput" );
     let keys, key, i, row;
