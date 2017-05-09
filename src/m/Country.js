@@ -51,12 +51,6 @@ class Country {
         this.religions = slots._religions ?
           slots._religions : slots.religions;
       }
-
-      //} catch (e) {
-      //  console.log( e.constructor.name + ": " + e.message );
-      //  this.destroy();
-      //  return;
-      //}
     }
   }
 
