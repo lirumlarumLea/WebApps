@@ -78,22 +78,6 @@ class Country {
 
 
   /**
-   * converts record carrying country data to country object
-   * @param countryData
-   * @returns {Country}
-   */
-  /*
-   convertRecordToObject(countryData) {
-   let country;
-   try {
-   country = new Country( countryData );
-   } catch (e) {
-   console.log( e.constructor.name + ": " + e.message );
-   }
-   return country;
-   }*/
-
-  /**
    * retrieves all the countries saved in the LocalStorage and converts them
    * back to objects
    */
