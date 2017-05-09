@@ -197,9 +197,15 @@ class City {
   }
 
   static clearAllData() {
-    //TODO consider references in county!!
-    throw new ReferentialIntegrityConstraintViolation( "Deleting all country" +
-      " instances hasn't been implemented yet!" );
+    let i, keys = Object.keys(City.instances);
+
+    for ( i = 0; i < keys.length; i += 1) {
+      City.instances[keys[i]].destroy();
+    }
+
+    City.instances = {};
+    localStorage.setItem( "cities", "{}" );
+    console.log( "Database cleared." );
   }
 }
 

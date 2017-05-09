@@ -18,7 +18,7 @@ const CountryCodeEL = new Enumeration( {
 /* global -ReligionsEL */
 const ReligionsEL = new Enumeration( ["Catholic",
   "Protestant", "Orthodox", "Hindu",
-  "Muslim", "Jewish" ] );
+  "Muslim", "Jewish"] );
 // const ReligionsEL = new Enumeration( {"Catholic": "Catholic",
 //   "Protestant": "Protestant", "Orthodox": "Orthodox", "Hindu": "Hindu",
 //   "Muslim": "Muslim", "Jewish": "Jewish" } );
@@ -31,11 +31,11 @@ class Country {
    */
   constructor( slots ) {
 
-    this._name = "n.a."; // [1], NonEmptyString{id}
-    this._code = CountryCodeEL.DE; // [1], {key}
-    this._population = 1; // [1], PositiveInteger
-    this._capital = new City( "default" ); // [1], City
-    this._religions = [];
+    // this._name = "n.a."; // [1], NonEmptyString{id}
+    // this._code = CountryCodeEL.DE; // [1], {key}
+    // this._population = 1; // [1], PositiveInteger
+    // this._capital = new City( "default" ); // [1], City
+    // this._religions = [];
 
     if (arguments.length === 0) {
       // first, assign default values
@@ -52,6 +52,7 @@ class Country {
       this.code = slots._code ? slots._code : slots.code;
       this.population = parseInt(
         (slots._population ? slots._population : slots.population), 10 );
+      this.cities = {}; // a country always has a city, namely the capital
       this.capital = slots._capital ? slots._capital : slots.capital;
 
       // [0,1], PositiveDecimal{max:100}
@@ -64,6 +65,10 @@ class Country {
       if (slots.religions || slots._religions) {
         this.religions = slots._religions ?
           slots._religions : slots.religions;
+      }
+
+      if (slots.cities || slots._cities) {
+        this.cities = slots._cities ? slots._cities : slots.cities;
       }
     }
   }
@@ -83,7 +88,7 @@ class Country {
     }
 
     if (country) {
-      Country.instances[ country.name ] = country;
+      Country.instances[country.name] = country;
       console.log( "The country " + country.name + " has been added." );
     } else {
       console.log( "Error when adding country." );
@@ -100,7 +105,7 @@ class Country {
 
     let allCountriesString = "{}", allCountries, keys, i, slots;
     try {
-        allCountriesString = localStorage.getItem( "countries" );
+      allCountriesString = localStorage.getItem( "countries" );
     } catch (e) {
       console.log( "Error when retrieving country data from " +
         "LocalStorage:\n" + e );
@@ -113,7 +118,7 @@ class Country {
       // creates new country objects according to the data and adds them to the
       // instances collection
       for (i = 0; i < keys.length; i += 1) {
-        slots = Country.convertRecToSlots(allCountries[keys[i]]);
+        slots = Country.convertRecToSlots( allCountries[keys[i]] );
         Country.add( slots );
       }
     } else {
@@ -126,15 +131,28 @@ class Country {
    * @param countryRec
    * @returns {*}
    */
-  static convertRecToSlots (countryRec) {
-    let countrySlots = util.cloneObject(countryRec), i;
+  static convertRecToSlots( countryRec ) {
+    let countrySlots = util.cloneObject( countryRec ), i, tempCities;
 
     // replace capital city reference with object
     countrySlots.capital = City.instances[countryRec.capitalRef];
     delete countrySlots.capitalRef;
 
-    countrySlots.religions = countryRec.religions ?
-      (countryRec.religions).slice() : (countryRec._religions).slice();
+    // cloneObject doesn't reliably clone arrays, so we have to do it manually
+    if (countryRec.religions) {
+      countrySlots.religions = (countryRec.religions).slice();
+    }
+
+    // convert the cities map from references to objects
+    if (countryRec.cityRefs) {
+      tempCities = {};
+      for (i = 0; i < countryRec.cityRefs.length; i += 1) {
+        tempCities[countryRec.cityRefs[i]] =
+          City.instances[countryRec.cityRefs[i]];
+      }
+      countrySlots.cities = tempCities;
+
+    }
 
     return countrySlots;
   }
@@ -143,7 +161,7 @@ class Country {
    * the information for a country is updated according to the passed values
    */
   update( slots ) {
-    let oldCountry = util.cloneObject( Country.instances[ this.name ] );
+    let oldCountry = util.cloneObject( Country.instances[this.name] );
     let newCountry;
 
     // to avoid UniquenessConstraintViolation
@@ -159,7 +177,7 @@ class Country {
     // existing country
     if (newCountry) {
 
-      Country.instances[ newCountry.name ] = newCountry;
+      Country.instances[newCountry.name] = newCountry;
       console.log( "Country " + newCountry.name + " updated. New data:\n" +
         newCountry.toString() );
     } else {
@@ -181,15 +199,15 @@ class Country {
 
     for (i = 0; i < keys.length; i += 1) {
       internationalOrganisation =
-        InternationalOrganisation.instances[ keys[ i ] ];
+        InternationalOrganisation.instances[keys[i]];
       //loop through the array to delete the right element
       for (j = 0; j < internationalOrganisation.members.length; j += 1) {
-        if (internationalOrganisation.members[ j ] === countryName) {
-          delete internationalOrganisation.members[ j ];
+        if (internationalOrganisation.members[j] === countryName) {
+          delete internationalOrganisation.members[j];
         }
       }
     }
-    delete Country.instances[ this.name ];
+    delete Country.instances[this.name];
 
     console.log( "Country " + countryName + " deleted." );
 
@@ -202,7 +220,7 @@ class Country {
   static saveAllData() {
     let allCountriesString, error = false, allCountries = {}, keys, i;
 
-    keys = Object.keys(Country.instances);
+    keys = Object.keys( Country.instances );
 
     for (i = 0; i < keys.length; i += 1) {
 
@@ -233,14 +251,26 @@ class Country {
    *
    * @returns {*}
    */
-  convertObjToRec () {
-    let countryRow = util.cloneObject(this);
+  convertObjToRec() {
+    let countryRow = util.cloneObject( this ), keys, i;
 
-      // create capital city Id reference
-      countryRow.capitalRef = this.capital.name;
-      delete countryRow.capital;
+    // create capital city Id reference
+    countryRow.capitalRef = this.capital.name;
+    delete countryRow.capital;
 
+    if (this.religions) {
       countryRow.religions = (this.religions).slice();
+    }
+
+    if (this.cities) {
+      countryRow.cityRefs = [];
+      keys = Object.keys( this.cities );
+
+      for (i = 0; i < keys.length; i += 1) {
+        countryRow.cityRefs.push( keys[i] );
+      }
+      delete countryRow.cities;
+    }
 
     return countryRow;
   }
@@ -256,40 +286,53 @@ class Country {
       City.createTestData();
     }
 
-    let temp = {_name: "Germany",
+    let temp = {
+      _name: "Germany",
       _code: CountryCodeEL.IN,
-      _capital: City.instances[ "Berlin" ],
+      _capital: City.instances["Berlin"],
       _population: 80854408,
       _lifeExpectancy: 80.57,
-      _religions: [ReligionsEL.CATHOLIC]};
-    Country.add( temp);
+      _religions: [ReligionsEL.CATHOLIC],
+      _cities: {
+        "Hamburg": City.instances["Hamburg"],
+        "Frankfurt": City.instances["Frankfurt"]
+      }
+    };
+    Country.add( temp );
 
 
     Country.add( {
       _name: "France",
       _code: CountryCodeEL.FR,
-      _capital: City.instances[ "Paris" ],
+      _capital: City.instances["Paris"],
       _population: 66553766,
       _lifeExpectancy: 81.75,
-      _religions: [ ReligionsEL["CATHOLIC"], ReligionsEL["MUSLIM"] ]
+      _religions: [ReligionsEL["CATHOLIC"], ReligionsEL["MUSLIM"]],
+      _cities: {
+        "Lyon": City.instances["Lyon"], "Marseilles": City.instances[
+          "Marseilles"], "Paris": City.instances["Paris"]
+      }
     } );
 
     Country.add( {
       _name: "Russia",
       _code: CountryCodeEL.RU,
-      _capital: City.instances[ "Moscow" ],
+      _capital: City.instances["Moscow"],
       _population: 142423773,
       _lifeExpectancy: 70.47,
-      _religions: [ ReligionsEL["ORTHODOX"], ReligionsEL["MUSLIM"] ]
+      _religions: [ReligionsEL["ORTHODOX"], ReligionsEL["MUSLIM"]],
+      _cities: {
+        "Moscow": City.instances["Moscow"],
+        "Novosibirsk": City.instances["Novosibirsk"]
+      }
     } );
 
     Country.add( {
       _name: "Monaco",
       _code: CountryCodeEL.MC,
-      _capital: City.instances[ "Monaco" ],
+      _capital: City.instances["Monaco"],
       _population: 30535,
-      _lifeExpectancy: 89.52,
-      _religions: [ ReligionsEL["CATHOLIC"] ]
+      _lifeExpectancy: 89.52
     } );
 
     Country.saveAllData();
@@ -306,7 +349,7 @@ class Country {
       keys = Object.keys( Country.instances );
       for (i = 0; i < keys.length; i += 1) {
         // use destroy method to properly handle all references
-        Country.instances[ keys[ i ] ].destroy();
+        Country.instances[keys[i]].destroy();
       }
 
       // hard reset instances
@@ -320,21 +363,35 @@ class Country {
   toString() {
     let str = "Country: " + this.name + "\n\tCountry Code: " + this.code + "" +
       "\n\tCapital City: " + this.capital.name +
-      "\n\tPopulation: " +  this.population;
-    let i;
+      "\n\tPopulation: " + this.population;
+    let i, keys;
 
+    // optional value
     if (this.lifeExpectancy) {
       str += ("\n\tAv. Life Expectancy: " + this.lifeExpectancy.toString());
     }
+
+    // add all religions as strings
     if (this.religions) {
       str += "\n\tReligions: ";
       for (i = 0; i < this.religions.length; i += 1) {
-        str += ReligionsEL.labels[ this.religions[ i ] ];
+        str += ReligionsEL.labels[this.religions[i]];
         if (i !== this.religions.length - 1) {
           str += ", ";
         }
       }
     }
+
+    // add all cities with their names
+    keys = Object.keys( this.cities );
+    str += "\n\tCities: ";
+    for (i = 0; i < keys.length; i += 1) {
+      str += keys[i];
+      if (i !== keys.length - 1) {
+        str += ", ";
+      }
+    }
+
     return str;
   }
 
@@ -364,7 +421,7 @@ class Country {
       if (!myId) {
         constraintViolation = new MandatoryValueConstraintViolation(
           "A country" + " always needs to have a name.", myId );
-      } else if (Country.instances[ myId ]) {
+      } else if (Country.instances[myId]) {
         constraintViolation = new UniquenessConstraintViolation( "A country's" +
           " name has to be unique.", myId );
       }
@@ -404,8 +461,8 @@ class Country {
 
         for (let i = 0; i < allCountryKeys.length; i += 1) {
 
-          let key = allCountryKeys[ i ];
-          if (Country.instances[ key ].code === myCode) {
+          let key = allCountryKeys[i];
+          if (Country.instances[key].code === myCode) {
             return new UniquenessConstraintViolation( "A country code must be" +
               " unique! " + myCode, myCode );
           }
@@ -491,7 +548,7 @@ class Country {
         keys = Object.keys( Country.instances );
         values = Object.values( Country.instances );
         for (i = 0; i < keys.length; i += 1) {
-          if (myCapital.equals( values[ i ].capital )) {
+          if (myCapital.equals( values[i].capital )) {
             return new UniquenessConstraintViolation( "A capital city has " +
               "to be unique!", myCapital );
           }
@@ -507,6 +564,13 @@ class Country {
     // only valid values should enter the database
     if (validationResult instanceof NoConstraintViolation) {
       this._capital = newCapital;
+      if (this.cities) {
+        if (!this.cities[this.capital.name]) {
+          this.cities[this.capital.name] = this.capital;
+        }
+      } else {
+        this.cities[this.capital.name] = this.capital;
+      }
     } else {
       alert( validationResult.message );
       throw validationResult;
@@ -552,18 +616,18 @@ class Country {
 
   static checkReligions( myReligions ) {
     if (myReligions) { // myReligions should be an array
-      if (!Array.isArray(myReligions)) {
-        return new RangeConstraintViolation("Religions must be stored in an" +
-          " array.", myReligions);
+      if (!Array.isArray( myReligions )) {
+        return new RangeConstraintViolation( "Religions must be stored in an" +
+          " array.", myReligions );
       }
 
       for (let i = 0; i < myReligions.length; i += 1) {
 
-        if (!util.isIntegerOrIntegerString( myReligions[ i ] ) ||
-          myReligions[ i ] < 0 || myReligions[ i ] > ReligionsEL.MAX) {
+        if (!util.isIntegerOrIntegerString( myReligions[i] ) ||
+          myReligions[i] < 0 || myReligions[i] > ReligionsEL.MAX) {
 
           return new RangeConstraintViolation( "The religion " +
-            ReligionsEL.enumLitNames[myReligions[ i ]] +
+            ReligionsEL.enumLitNames[myReligions[i]] +
             " is unknown.", myReligions );
         }
 
@@ -589,12 +653,44 @@ class Country {
 
   //check if the referenced Country is existent
   static checkCountryId( id ) {
-    if (Country.instances[ id ]) {
+    if (Country.instances[id]) {
       return new NoConstraintViolation();
     } else {
       return new ReferentialIntegrityConstraintViolation(
         "Country does not exist" );
     }
+  }
+
+  set cities( newCities ) {
+    const validationResult = Country.checkCities( newCities );
+    let tempObj = {};
+    // only valid values should enter the database
+    if (validationResult instanceof NoConstraintViolation) {
+      this._cities = Object.assign({}, newCities, this._cities);
+    } else {
+      alert( validationResult.message );
+      throw validationResult;
+    }
+  }
+
+  get cities() {
+    return this._cities;
+  }
+
+  static checkCities( myCity ) {
+    let i, keysCities;
+    if (myCity) {
+
+      // known cities only
+      keysCities = Object.keys( myCity );
+      for (i = 0; i < keysCities; i += 1) {
+        if (Object.keys( City.instances ).indexOf( keysCities[i] ) === -1) {
+          return new ReferentialIntegrityConstraintViolation( "The city " +
+            keysCities[i].name + " is unknown.", keysCities[i] );
+        }
+      }
+    }
+    return new NoConstraintViolation( myCity );
   }
 }
 

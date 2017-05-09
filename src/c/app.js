@@ -36,12 +36,10 @@ pl.c.app = {
 
   clearData: function () {
     try {
-      Country.clearAllData(); // clears Int.Orgs. too, since they always
-      // need a country reference
-      //City.clearAllData();
-      City.instances = {};
-      localStorage.setItem( "cities", "{}" );
-      console.log( "Database cleared." );
+
+      InternationalOrganisation.clearAllData();
+      Country.clearAllData();
+      City.clearAllData();
     } catch (e) {
       console.log( e.constructor.name + ": " + e.message );
     }
