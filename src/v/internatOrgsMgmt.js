@@ -100,7 +100,7 @@ pl.v.addInternationalOrganisation = {
     //loop through the select element and add to array
     for ( var i = 0; i < mulSelMembers.selectedOptions.length; i+=1) {
       arr.push( mulSelMembers.selectedOptions[i].value);
-    };
+    }
     
     const slots = {
       acronym: inputForm["ioAcronym"].value,
