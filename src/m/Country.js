@@ -64,7 +64,6 @@ class Country {
       if (slots.religions || slots._religions) {
         this.religions = slots._religions ?
           slots._religions : slots.religions;
-        console.log(this.religions);
       }
     }
   }
@@ -89,7 +88,6 @@ class Country {
     } else {
       console.log( "Error when adding country." );
     }
-    console.log(Country.instances[country.name]);
   }
 
 
@@ -584,7 +582,6 @@ class Country {
       alert( validationResult.message );
       throw validationResult;
     }
-    console.log("newReligions: " + newReligions);
   }
 
   get religions() {

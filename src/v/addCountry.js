@@ -79,13 +79,13 @@ pl.v.addCountry = {
       // lifeExpectancy see below
       // religions see below
     };
-    let vals = fldSetReligion.childNodes;
-    let relArr = [];
+    let values = fldSetReligion.childNodes;
+    let relArr = [], i;
 
     //auf i= 0-2 sind leerer Text und legende, ab drei fangen die Checkboxen an
-    for (let i = 3; i < vals.length; i += 1) {
-      if (vals[ i ].firstChild.checked) {
-        relArr.push( parseInt( vals[ i ].firstChild.value, 10 ) );
+    for (i = 3; i < values.length; i += 1) {
+      if (values[ i ].firstChild.checked) {
+        relArr.push( parseInt( values[ i ].firstChild.value, 10 ) );
       }
     }
 

@@ -14,7 +14,6 @@
     <script src="src/c/app.js"></script>
     <script src="src/v/updateCountry.js"></script>
     <script type="text/javascript">
-      //TODO update to new params, if necessary add form fields
       window.addEventListener( "load", pl.v.updateCountry.setupUserInterface );
       window.addEventListener( "beforeunload", pl.c.app.saveAllData );
     </script>
@@ -29,9 +28,12 @@
     <form id="countryUpdate">
         <label>Name: <select id="selName">
             <option>---</option>
-        </select></label><br/>
+        </select></label><br/><br />
         <label>Name: <output id="cName"></output></label><br />
         <label>Code: <select id="cCode"></select><br/></label>
+        <label>Capital City: <select id="cCapital">
+            <option>---</option>
+        </select><br/></label>
         <label>Population: <input id="cPopulation"/></label><br/>
         <label><em>Life Expectancy:</em>
             <input id="cLifeExpectancy"/></label><br/>
