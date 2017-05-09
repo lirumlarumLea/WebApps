@@ -127,7 +127,6 @@ class City {
     allCities = JSON.parse( allCitiesString );
 
     if (allCities) {
-      console.log( "allCitiesStr: " + allCitiesString );
       keys = Object.keys( allCities );
 
       // creates new city objects according to the data and adds them to the

@@ -11,7 +11,7 @@ pl.v.addCountry = {
     const inputForm = document.forms["countryInput"],
         selectCode = inputForm["cCode"],
         fldSetReligion = document.getElementById( "cReligions" ),
-        tempReligions = JSON.parse( JSON.stringify( ReligionEL.labels ) );
+        tempReligions = JSON.parse( JSON.stringify( ReligionsEL.labels ) );
 
     pl.c.app.retrieveAllData();
     
