@@ -19,8 +19,6 @@ pl.v.deleteCity = {
     deleteBtn.addEventListener( "click",
       pl.v.deleteCity.handleDeleteBtnClickEvent );
 
-    // save all data on window/tab closed
-    window.addEventListener( "beforeunload", City.saveAllData );
   },
 
   /**
@@ -38,5 +36,6 @@ pl.v.deleteCity = {
       City.instances[select.value].destroy();
       select.remove( select.selectedIndex );
     }
+    pl.c.app.saveAllData();
   }
 };

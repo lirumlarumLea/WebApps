@@ -143,8 +143,14 @@ class City {
    * destroys a city instance
    */
   destroy() {
-    let cityName = this.name;
-
+    let cityName = this.name, keys = Object.keys(Country.instances), i;
+    // on delete cascade (if a capital is deleted, then the country is too)
+    for (i = 0; i < keys.length; i += 1) {
+      if (Country.instances[keys[i]] && this.equals(
+        Country.instances[keys[i]].capital)) {
+        Country.instances[keys[i]].destroy();
+      }
+    }
     delete City.instances[ this.name ];
 
     console.log( "City " + cityName + " deleted." );

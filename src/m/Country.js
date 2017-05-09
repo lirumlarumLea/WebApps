@@ -178,8 +178,7 @@ class Country {
     //delete all references to this country in the international Organisations
     // (on delete cascade)
     keys = Object.keys( InternationalOrganisation.instances );
-    console.log( keys );
-    console.log( InternationalOrganisation.instances );
+
     for (i = 0; i < keys.length; i += 1) {
       internationalOrganisation =
         InternationalOrganisation.instances[ keys[ i ] ];

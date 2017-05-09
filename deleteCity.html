@@ -15,6 +15,8 @@
     <script src="src/v/deleteCity.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load", pl.v.deleteCity.setupUserInterface );
+      // save all data on window/tab closed
+      window.addEventListener( "beforeunload", pl.c.app.saveAllData );
     </script>
 </head>
 <body>
