@@ -7,11 +7,12 @@ It was implemented during a university class on Web Applications.
 https://github.com/leusclev/WebApps
 
 ###Work assignment
-Levin-Can Leuschner:
 * International organisation model class
 * International organisation CRUD-services
+* Country association in Int. Orgs.
 
 Lea Weber:
 * City model class
 * City CRUD-services
 * Capital city association in Country class
+* Cities association in Country class
