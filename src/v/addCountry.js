@@ -73,7 +73,8 @@ pl.v.addCountry = {
     };
     let vals = fldSetReligion.childNodes;
     let relArr = [];
-    for (let i = 0; i < vals.length; i += 1) {
+    //auf i= 0-2 sind leerer Text und legende, ab drei fangen die Checkboxen an
+    for (let i = 3; i < vals.length; i += 1) {
       if (vals[i].firstChild.checked) {
         relArr.push( parseInt( vals[i].firstChild.value, 10 ) );
       }
