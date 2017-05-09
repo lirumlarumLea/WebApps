@@ -143,19 +143,22 @@ class InternationalOrganisation {
   static createTestData() {
     // errors don't need to be caught here, they are handled in the add method
     //not needed since creating test data is handled in c.app
-    this.add( {
+    InternationalOrganisation.add( {
       _acronym: "UN",
-      _name: "United nations"
+      _name: "United nations",
+      _members: ["Germany", "France", "Russia"]
     } );
-    
-    this.add( {
+
+    InternationalOrganisation.add( {
       _acronym: "WHO",
-      _name: "World Health Organisation"
+      _name: "World Health Organisation",
+      _members: ["Germany", "France", "Russia"]
     } );
-    
-    this.add( {
+
+    InternationalOrganisation.add( {
       _acronym: "NATO",
-      _name: "North Atlantic Treaty Organization"
+      _name: "North Atlantic Treaty Organization",
+      _members: ["Germany", "France"]
     } );
     
     InternationalOrganisation.saveAllData();

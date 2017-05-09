@@ -8,14 +8,15 @@
     <script src="lib/errorTypes.js"></script>
     <script src="lib/Enumeration.js"></script>
     <script src="src/c/initialize.js"></script>
-    <script src="src/c/app.js"></script>
     <script src="src/m/Country.js"></script>
+    <script src="src/m/City.js"></script>
     <script src="src/m/InternationalOrganisation.js"></script>
+    <script src="src/c/app.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load",
-          Country.retrieveAllSaved );
+        Country.retrieveAllSaved );
       window.addEventListener( "beforeunload",
-          Country.saveAllData );
+        Country.saveAllData );
     </script>
 </head>
 <body>
@@ -25,9 +26,10 @@
         Minimal App Tutorial</a>
     by Prof. Gerd Wagner.</p>
 
-<div>
-    <p><em>Please choose an action:</em></p><br/>
+<p><em>Please choose an action:</em></p><br/>
 
+<div>
+    <h4>Country data management</h4>
     <button type="button"
             onclick="window.location.href='retrieveAndListAllCountries.html';">
         List all countries
@@ -50,19 +52,51 @@
     <button type="button" onclick="pl.c.app.createTestData()">
         Create test data
     </button>
-    <br/>
+</div>
+<br/>
+
+<div>
+    <h4>International Organisations data management</h4>
     <button type="button" onclick="window.location.href='retrieveAndListAllIntOrgs.html';">
         List all International Organisations
     </button>
     <button type="button" onclick="window.location.href='addInternationalOrganisation.html';">
         Add an International Organisations
     </button>
+    <br/>
     <button type="button" onclick="window.location.href='updateInternationalOrganisation.html';">
         Update an International Organisations data
     </button>
     <button type="button" onclick="window.location.href='deleteInternationalOrganisation.html';">
         Delete an International Organisations data
     </button>
+    <br />
+
+    <div>
+        <h4>City data management</h4>
+        <button type="button"
+                onclick="window.location.href='retrieveAndListAllCities.html';">
+            List all cities
+        </button>
+        <button type="button" onclick="window.location.href='addCity.html';">
+            Add a city
+        </button>
+        <br/>
+        <button type="button" onclick="window.location.href='updateCity.html';">
+            Update a city's data
+        </button>
+
+        <button type="button" onclick="window.location.href='deleteCity.html';">
+            Delete a city from memory
+        </button>
+        <br/>
+        <button type="button" onclick="City.clearAllData()">
+            Clear city database
+        </button>
+        <button type="button" onclick="City.createTestData()">
+            Create test data for cities
+        </button>
+    </div>
 </div>
 </body>
 </html>

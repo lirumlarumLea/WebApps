@@ -14,7 +14,6 @@ pl.v.deleteCity = {
     deleteBtn = document.getElementById( "deleteBtn" );
 
     City.retrieveAllData();
-    City.createTestData();
     util.fillSelectWithOptions( City.instances, selCity, "name", "name" );
 
     deleteBtn.addEventListener( "click",

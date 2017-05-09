@@ -18,6 +18,7 @@ pl.v.retrieveAndListCountries = {
       row = table.insertRow( -1 ); // -1 adds row at the end of the table
       row.insertCell( -1 ).innerHTML = Country.instances[key].name;
       row.insertCell( -1 ).innerHTML = Country.instances[key].code;
+      row.insertCell( -1 ).innerHTML = Country.instances[key].capital.name;
       row.insertCell( -1 ).innerHTML = Country.instances[key].population;
       let lECell = row.insertCell( -1 );
       //optional value

@@ -71,6 +71,10 @@ class City {
     return ("City: " + this.name);
   }
 
+  equals (anotherCity) {
+    return this.name === anotherCity.name;
+  }
+
   /** ##########################################################################
    * DATA MGMT
    * ###########################################################################
@@ -179,6 +183,13 @@ class City {
     City.add("Moscow");
     City.add("Novosibirsk");
     City.add("Paris");
+    City.add("Monaco");
+  }
+
+  static clearAllData() {
+    //TODO consider references in county!!
+    throw new ReferentialIntegrityConstraintViolation("Deleting all country" +
+      " instances hasn't been implemented yet!");
   }
 }
 
