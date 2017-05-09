@@ -45,6 +45,7 @@ pl.v.retrieveAndListCountries = {
         }
         console.log(relStr);
         relCell.innerHTML = relStr;
+        relStr = "";
       }
     }
   }
