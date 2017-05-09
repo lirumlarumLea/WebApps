@@ -22,6 +22,8 @@ pl.v.updateCountry = {
       "name", "name" );
     util.createChoiceWidget( fldSetReligion, "religion", [], "checkbox",
       tempReligions.splice( 1 ) );
+    util.selectMultipleValues( formObj["cCities"],
+      Object.keys( City.instances ) );
 
     util.fillSelectWithOptions( Country.instances, selCountry, "name", "name" );
 
@@ -54,6 +56,10 @@ pl.v.updateCountry = {
       formObj["cReligions"].setCustomValidity(
         Country.checkReligions(
           formObj["cReligions"].value ).message );
+    } );
+    formObj["cCities"].addEventListener( "input", function () {
+      formObj["cCities"].setCustomValidity(
+        Country.checkCities( formObj["cCities"].selectedOptions ).message );
     } );
 
     // neutralize the submit event

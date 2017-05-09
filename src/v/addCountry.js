@@ -21,6 +21,8 @@ pl.v.addCountry = {
       "name", "name" );
     util.createChoiceWidget( fldSetReligion, "religion", [], "checkbox",
       tempReligions.splice( 1 ) );
+    util.selectMultipleValues( inputForm["cCities"],
+      Object.keys( City.instances ) );
 
     // check fields on input
     inputForm["cName"].addEventListener( "input", function () {
@@ -52,6 +54,10 @@ pl.v.addCountry = {
         Country.checkReligions(
           inputForm["cReligions"].value ).message );
     } );
+    inputForm["cCities"].addEventListener( "input", function () {
+      inputForm["cCities"].setCustomValidity(
+        Country.checkCities( inputForm["cCities"].selectedOptions ).message );
+    } );
 
     // save new country according to current input in fields
     inputForm["saveBtn"].addEventListener( "click",
@@ -75,7 +81,8 @@ pl.v.addCountry = {
       name: inputForm["cName"].value,
       code: inputForm["cCode"].value,
       capital: City.instances[inputForm["cCapital"].value],
-      population: inputForm["cPopulation"].value
+      population: inputForm["cPopulation"].value,
+      cities: inputForm["cCities"].selectedOptions
       // lifeExpectancy see below
       // religions see below
     };
@@ -97,6 +104,8 @@ pl.v.addCountry = {
       Country.checkCapital( slots.capital ).message );
     inputForm["cPopulation"].setCustomValidity(
       Country.checkPopulation( slots.population ).message );
+    inputForm["cCities"].setCustomValidity(
+      Country.checkCities( slots.cities).message );
     // optional value
     if (inputForm["cLifeExpectancy"].value) {
       slots.lifeExpectancy = inputForm["cLifeExpectancy"].value;
