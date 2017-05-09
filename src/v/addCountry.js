@@ -12,8 +12,8 @@ pl.v.addCountry = {
         selectCode = inputForm["cCode"],
         fldSetReligion = document.getElementById( "cReligions" ),
         tempReligions = JSON.parse( JSON.stringify( ReligionEL.labels ) );
-    
-    Country.retrieveAllSaved();
+
+    pl.c.app.retrieveAllData();
     
     util.fillSelectWithOptionsFromArr( selectCode,
         (CountryCodeEL.labels) );

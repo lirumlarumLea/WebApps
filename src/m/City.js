@@ -51,7 +51,7 @@ class City {
       if (!newName) {
         constraintViolation = new MandatoryValueConstraintViolation(
           "A city always needs to have a name.", newName );
-      } else if (Object.keys(City.instances).indexOf(newName) !== -1) {
+      } else if (Object.keys( City.instances ).indexOf( newName ) !== -1) {
         constraintViolation = new UniquenessConstraintViolation( "A city's" +
           " name has to be unique.", newName );
       }
@@ -71,7 +71,7 @@ class City {
     return ("City: " + this.name);
   }
 
-  equals (anotherCity) {
+  equals( anotherCity ) {
     return this.name === anotherCity.name;
   }
 
@@ -96,7 +96,7 @@ class City {
 
     if (tempCity) {
       City.instances[ cityName ] = tempCity;
-      console.log( "City " + City.instances[cityName].toString() + " added to" +
+      console.log( "City " + City.instances[ cityName ].name + " added to" +
         " database." );
     } else {
       console.log( "Error when creating city." );
@@ -115,34 +115,38 @@ class City {
 
     let allCitiesString = "{}", allCities, keys, i;
     try {
-      if (localStorage.getItem( "cities" )) {
-        allCitiesString = localStorage.getItem( "cities" );
+      // if (localStorage.getItem( "cities" ) !== "{}") {
+      allCitiesString = localStorage.getItem( "cities" );
 
-      } else {
-        console.log( "No cities in storage." );
-      }
+      // }
     } catch (e) {
-      console.log( "Error when retrieving city data from LocalStorage:\n" + e );
+      console.log( "Error when retrieving city data from LocalStorage:\n" +
+        e.message );
     }
 
     allCities = JSON.parse( allCitiesString );
-    keys = Object.keys( allCities );
 
-    // creates new city objects according to the data and adds them to the
-    // instances collection
-    for (i = 0; i < keys.length; i += 1) {
-      City.add( keys[ i ] );
+    if (allCities) {
+      console.log( "allCitiesStr: " + allCitiesString );
+      keys = Object.keys( allCities );
+
+      // creates new city objects according to the data and adds them to the
+      // instances collection
+      for (i = 0; i < keys.length; i += 1) {
+        City.add( keys[ i ] );
+      }
+    } else {
+      console.log( "No cities in storage." );
     }
   }
-
 
   /**
    * destroys a city instance
    */
-  destroy () {
+  destroy() {
     let cityName = this.name;
 
-    delete City.instances[this.name];
+    delete City.instances[ this.name ];
 
     console.log( "City " + cityName + " deleted." );
   }
@@ -175,22 +179,22 @@ class City {
   /**
    * adds some cities to the app so functionality can be tested
    */
-  static createTestData () {
-    City.add("Berlin");
-    City.add("Frankfurt");
-    City.add("Hamburg");
-    City.add("Lyon");
-    City.add("Marseilles");
-    City.add("Moscow");
-    City.add("Novosibirsk");
-    City.add("Paris");
-    City.add("Monaco");
+  static createTestData() {
+    City.add( "Berlin" );
+    City.add( "Frankfurt" );
+    City.add( "Hamburg" );
+    City.add( "Lyon" );
+    City.add( "Marseilles" );
+    City.add( "Moscow" );
+    City.add( "Novosibirsk" );
+    City.add( "Paris" );
+    City.add( "Monaco" );
   }
 
   static clearAllData() {
     //TODO consider references in county!!
-    throw new ReferentialIntegrityConstraintViolation("Deleting all country" +
-      " instances hasn't been implemented yet!");
+    throw new ReferentialIntegrityConstraintViolation( "Deleting all country" +
+      " instances hasn't been implemented yet!" );
   }
 }
 

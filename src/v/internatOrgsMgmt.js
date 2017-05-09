@@ -13,9 +13,8 @@ pl.v.retrieveAndListInternationalOrganisations = {
   setupUserInterface: function () {
     let table = document.getElementById( "internationalOrganisationsOutput" );
     let keys, key, i, row;
-    
-    Country.retrieveAllSaved();
-    InternationalOrganisation.retrieveAllSaved();
+
+    pl.c.app.retrieveAllData();
     keys = Object.keys( InternationalOrganisation.instances );
     
     for (i = 0; i < keys.length; i += 1) {
@@ -52,10 +51,9 @@ pl.v.addInternationalOrganisation = {
   setupUserInterface: function () {
     const inputForm = document.forms["internationalOrganisationInput"],
         mulSelMembers = document.getElementById("ioSelMembers");
-    
-    Country.retrieveAllSaved();
-    InternationalOrganisation.retrieveAllSaved();
-  
+
+    pl.c.app.retrieveAllData();
+
     util.fillSelectWithOptions( Country.instances, mulSelMembers,
       "name", "name");
     
@@ -132,10 +130,9 @@ pl.v.updateInternationalOrganisation = {
         //selInternationalOrganisation = document.getElementById( "selName" ),
         selInternationalOrganisation = document.getElementById( "selAcronym" ),
         mulSelMembers = document.getElementById("ioSelMembers");
-    
-    Country.retrieveAllSaved();
-    InternationalOrganisation.retrieveAllSaved();
-    
+
+    pl.c.app.retrieveAllData();
+
     util.fillSelectWithOptions( InternationalOrganisation.instances,
       selInternationalOrganisation, "acronym", "acronym" );
     util.fillSelectWithOptions( Country.instances, mulSelMembers,
@@ -242,10 +239,9 @@ pl.v.deleteInternationalOrganisation = {
   setupUserInterface: function () {
     const selInternationalOrganisation = document.getElementById( "selAcronym"),
         deleteBtn = document.getElementById( "deleteBtn");
-    
-    Country.retrieveAllSaved();
-    InternationalOrganisation.retrieveAllSaved();
-    
+
+    pl.c.app.retrieveAllData();
+
     const keys = Object.keys( InternationalOrganisation.instances );
     console.log( "keys[0]= " + keys );
     util.fillSelectWithOptions( InternationalOrganisation.instances,

@@ -10,8 +10,7 @@ pl.v.deleteCountry = {
 
     selCountry = document.getElementById( "selectCountry" );
     deleteBtn = document.getElementById( "deleteBtn" );
-    Country.retrieveAllSaved();
-    InternationalOrganisation.retrieveAllSaved();
+    pl.c.app.retrieveAllData();
     keys = Object.keys( Country.instances );
     console.log( "keys[0]= " + keys );
     console.log( Object.keys( InternationalOrganisation.instances ) );

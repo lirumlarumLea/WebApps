@@ -8,8 +8,8 @@
     <script src="lib/errorTypes.js"></script>
     <script src="lib/Enumeration.js"></script>
     <script src="src/c/initialize.js"></script>
-    <script src="src/m/Country.js"></script>
     <script src="src/m/City.js"></script>
+    <script src="src/m/Country.js"></script>
     <script src="src/m/InternationalOrganisation.js"></script>
     <script src="src/c/app.js"></script>
     <script type="text/javascript">
@@ -27,6 +27,15 @@
     by Prof. Gerd Wagner.</p>
 
 <p><em>Please choose an action:</em></p><br/>
+<div>
+    <button type="button" onclick="pl.c.app.clearData()">
+        Clear database
+    </button>
+    <button type="button" onclick="pl.c.app.createTestData()">
+        Create test data
+    </button>
+</div>
+<br/>
 
 <div>
     <h4>Country data management</h4>
@@ -46,12 +55,13 @@
         Delete a country from memory
     </button>
     <br/>
-    <button type="button" onclick="pl.c.app.clearData()">
-        Clear database
+    <button type="button" onclick="Country.clearAllData()">
+        Clear country database
     </button>
-    <button type="button" onclick="pl.c.app.createTestData()">
-        Create test data
+    <button type="button" onclick="Country.createTestData()">
+        Create test data for countries
     </button>
+
 </div>
 <br/>
 
@@ -61,16 +71,16 @@
         List all International Organisations
     </button>
     <button type="button" onclick="window.location.href='addInternationalOrganisation.html';">
-        Add an International Organisations
+        Add an International Organisation
     </button>
     <br/>
     <button type="button" onclick="window.location.href='updateInternationalOrganisation.html';">
-        Update an International Organisations data
+        Update an International Organisation's data
     </button>
     <button type="button" onclick="window.location.href='deleteInternationalOrganisation.html';">
-        Delete an International Organisations data
+        Delete an International Organisation's data
     </button>
-    <br />
+    <br/>
 
     <div>
         <h4>City data management</h4>

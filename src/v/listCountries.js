@@ -9,8 +9,8 @@ pl.v.retrieveAndListCountries = {
   setupUserInterface: function () {
     let table = document.getElementById( "countryOutput" );
     let keys, key, i, row;
-    
-    Country.retrieveAllSaved();
+
+    pl.c.app.retrieveAllData();
     keys = Object.keys( Country.instances );
     
     for (i = 0; i < keys.length; i += 1) {

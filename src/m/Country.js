@@ -103,30 +103,45 @@ class Country {
    * retrieves all the countries saved in the LocalStorage and converts them
    * back to objects
    */
-  static retrieveAllSaved() {
+  static retrieveAllData() {
     console.log( "Country data retrieval entered." );
 
-    let allCountriesString = "{}", allCountries, keys, i;
+    let allCountriesString = "{}", allCountries, keys, i, slots;
     try {
-      if (localStorage.getItem( "countries" )) {
         allCountriesString = localStorage.getItem( "countries" );
-
-      } else {
-        console.log( "No countries in storage." );
-      }
     } catch (e) {
       console.log( "Error when retrieving country data from " +
         "LocalStorage:\n" + e );
     }
 
     allCountries = JSON.parse( allCountriesString );
-    keys = Object.keys( allCountries );
+    if (allCountries) {
+      keys = Object.keys( allCountries );
 
-    // creates new country objects according to the data and adds them to the
-    // instances collection
-    for (i = 0; i < keys.length; i += 1) {
-      Country.add( allCountries[ keys[ i ] ] );
+      // creates new country objects according to the data and adds them to the
+      // instances collection
+      for (i = 0; i < keys.length; i += 1) {
+        slots = Country.convertRecToSlots(allCountries[keys[i]]);
+        Country.add( slots );
+      }
+    } else {
+      console.log( "No countries in storage." );
     }
+  }
+
+  /**
+   * replaces the references in a country record with referenced objects
+   * @param countryRec
+   * @returns {*}
+   */
+  static convertRecToSlots (countryRec) {
+    let countrySlots = util.cloneObject(countryRec), i;
+
+    // replace capital city reference with object
+    countrySlots.capital = City.instances[countryRec.capitalRef];
+    delete countrySlots.capitalRef;
+
+    return countrySlots;
   }
 
   /**
@@ -166,6 +181,7 @@ class Country {
     let countryName = this.name;
     let internationalOrganisation = null, keys, i, j;
     //delete all references to this country in the international Organisations
+    // (on delete cascade)
     keys = Object.keys( InternationalOrganisation.instances );
     console.log( keys );
     console.log( InternationalOrganisation.instances );
@@ -190,10 +206,18 @@ class Country {
    * writes all data from Country.instances to the LocalStorage
    */
   static saveAllData() {
-    let allCountriesString, error = false;
+    let allCountriesString, error = false, allCountries = {}, keys, i;
+
+    keys = Object.keys(Country.instances);
+
+    for (i = 0; i < keys.length; i += 1) {
+
+      allCountries[keys[i]] = Country.instances[keys[i]].convertObjToRec();
+    }
+
 
     try {
-      allCountriesString = JSON.stringify( Country.instances );
+      allCountriesString = JSON.stringify( allCountries );
       localStorage.setItem( "countries", allCountriesString );
     }
     catch
@@ -209,70 +233,99 @@ class Country {
     }
   }
 
+  /**
+   * replaces all the objects in a country object with reference values and
+   * returns the resulting object
+   *
+   * @returns {*}
+   */
+  convertObjToRec () {
+    let countryRow = util.cloneObject(this);
+
+      // create capital city Id reference
+      countryRow.capitalRef = this.capital.name;
+      delete countryRow.capital;
+
+    return countryRow;
+  }
 
   /**
    * adds some countries to the app so functionality can be tested
    */
-   static createTestData() {
-   // errors don't need to be caught here, they are handled in the add method
-   Country.add({
-   _name: "Germany",
-   _code: CountryCodeEL.DE,
-   _capital: City.instances["Berlin"],
-   _population: 80854408,
-   _lifeExpectancy: 80.57,
-   _religions: [ReligionEL.CATHOLIC, ReligionEL.PROTESTANT,
-   ReligionEL.MUSLIM]
-   } );
+  static createTestData() {
+    // errors don't need to be caught here, they are handled in the add method
+    if (Object.keys( City.instances ).length === 0) {
+      // necessary, so users can easily create country data,
+      // because a country always needs an existing city as capital
+      City.createTestData();
+    }
 
-   Country.add( {
-   _name: "France",
-   _code: CountryCodeEL.FR,
-   _capital: City.instances["Paris"],
-   _population: 66553766,
-   _lifeExpectancy: 81.75,
-   _religions: [ReligionEL.CATHOLIC, ReligionEL.MUSLIM]
-   } );
+    Country.add( {
+      _name: "Germany",
+      _code: CountryCodeEL.DE,
+      _capital: City.instances[ "Berlin" ],
+      _population: 80854408,
+      _lifeExpectancy: 80.57,
+      _religions: [ ReligionEL.CATHOLIC, ReligionEL.PROTESTANT,
+        ReligionEL.MUSLIM ]
+    } );
 
-   Country.add( {
-   _name: "Russia",
-   _code: CountryCodeEL.RU,
-   _capital: City.instances["Moscow"],
-   _population: 142423773,
-   _lifeExpectancy: 70.47,
-   _religions: [ReligionEL.ORTHODOX, ReligionEL.MUSLIM]
-   } );
+    Country.add( {
+      _name: "France",
+      _code: CountryCodeEL.FR,
+      _capital: City.instances[ "Paris" ],
+      _population: 66553766,
+      _lifeExpectancy: 81.75,
+      _religions: [ ReligionEL.CATHOLIC, ReligionEL.MUSLIM ]
+    } );
 
-   Country.add( {
-   _name: "Monaco",
-   _code: CountryCodeEL.MC,
-   _capital: City.instances["Monaco"],
-   _population: 30535,
-   _lifeExpectancy: 89.52,
-   _religions: [ReligionEL.CATHOLIC]
-   } );
+    Country.add( {
+      _name: "Russia",
+      _code: CountryCodeEL.RU,
+      _capital: City.instances[ "Moscow" ],
+      _population: 142423773,
+      _lifeExpectancy: 70.47,
+      _religions: [ ReligionEL.ORTHODOX, ReligionEL.MUSLIM ]
+    } );
 
-   Country.saveAllData();
-   }
+    Country.add( {
+      _name: "Monaco",
+      _code: CountryCodeEL.MC,
+      _capital: City.instances[ "Monaco" ],
+      _population: 30535,
+      _lifeExpectancy: 89.52,
+      _religions: [ ReligionEL.CATHOLIC ]
+    } );
+
+    Country.saveAllData();
+  }
 
 
   /**
    * clears all country data in the localStorage and instead sets an empty
    * object string
    */
-  /*
-   static clearAllData() {
-   if (confirm( "Do you want to clear all data?" )) {
-   Country.instances = {};
-   localStorage.setItem( "countries", "{}" );
-   console.log( "Database cleared." );
-   }
-   }*/
+  static clearAllData() {
+    let i, keys;
+    if (confirm( "Do you want to clear all country data?" )) {
+      keys = Object.keys( Country.instances );
+      for (i = 0; i < keys.length; i += 1) {
+        // use destroy method to properly handle all references
+        Country.instances[ keys[ i ] ].destroy();
+      }
+
+      // hard reset instances
+      Country.instances = {};
+      localStorage.setItem( "countries", "{}" );
+      console.log( "Database cleared." );
+    }
+  }
 
 
   toString() {
     let str = "Country: " + this.name + "\n\tCountry Code: " + this.code + "" +
-      "\n\tPopulation: " + this.population;
+      "\n\tCapital City: " + this.capital.name +
+      "\n\tPopulation: " +  this.population;
 
     if (this.lifeExpectancy) {
       str += ("\n\tAv. Life Expectancy: " + this.lifeExpectancy.toString());
@@ -418,7 +471,7 @@ class Country {
 
 
   static checkCapital( myCapital ) {
-    let i, keys;
+    let i, keys, values;
 
     // mandatory
     if (!myCapital) {
@@ -432,28 +485,29 @@ class Country {
 
       } else {
         // known city
-        if (Object.keys(City.instances).indexOf(myCapital.name) !== -1) {
-          return ReferentialIntegrityConstraintViolation( "The city " +
+        if (Object.keys( City.instances ).indexOf( myCapital.name ) === -1) {
+          return new ReferentialIntegrityConstraintViolation( "The city " +
             myCapital.name + " is unknown.", myCapital );
         }
 
         // unique
         keys = Object.keys( Country.instances );
+        values = Object.values( Country.instances );
         for (i = 0; i < keys.length; i += 1) {
-          if (myCapital.equals( keys[ i ].name)) {
+          if (myCapital.equals( values[ i ].capital )) {
             return new UniquenessConstraintViolation( "A capital city has " +
               "to be unique!", myCapital );
           }
         }
       }
     }
-    return new NoConstraintViolation(myCapital);
+    return new NoConstraintViolation( myCapital );
   }
 
   set capital( newCapital ) {
     const validationResult = Country.checkCapital( newCapital );
 
-      // only valid values should enter the database
+    // only valid values should enter the database
     if (validationResult instanceof NoConstraintViolation) {
       this._capital = newCapital;
     } else {

@@ -13,7 +13,7 @@ pl.v.deleteCity = {
     selCity = document.getElementById( "selectCity" );
     deleteBtn = document.getElementById( "deleteBtn" );
 
-    City.retrieveAllData();
+    pl.c.app.retrieveAllData();
     util.fillSelectWithOptions( City.instances, selCity, "name", "name" );
 
     deleteBtn.addEventListener( "click",

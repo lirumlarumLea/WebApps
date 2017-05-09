@@ -29,17 +29,15 @@ pl.c.app = {
   retrieveAllData: function () {
 
     City.retrieveAllData();
-    Country.retrieveAllSaved();
-    InternationalOrganisation.retrieveAllSaved();
+    Country.retrieveAllData();
+    InternationalOrganisation.retrieveAllData();
 
     },
 
   clearData: function () {
     try {
-      Country.instances = {};
-      localStorage.setItem( "countries", "{}" );
-      InternationalOrganisation.instances = {};
-      localStorage.setItem( "internationalOrganisations", "{}" );
+      Country.clearAllData(); // clears Int.Orgs. too, since they always
+      // need a country reference
       //City.clearAllData();
       City.instances = {};
       localStorage.setItem( "cities", "{}" );

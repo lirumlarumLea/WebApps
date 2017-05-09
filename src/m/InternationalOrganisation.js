@@ -8,7 +8,7 @@ class InternationalOrganisation {
    *
    * @throws ConstraintViolation error via setters
    */
-  constructor(slots) {
+  constructor( slots ) {
     if (arguments.length === 0) {
       // first, assign default values
       this.acronym = ""; //NonEmptyString{id}
@@ -21,15 +21,16 @@ class InternationalOrganisation {
       // [*] Array of Countries in members
       if (slots.members || slots._members) {
         this.members = (slots._members ?
-            slots._members : slots.members)/* || slots._membersIdRef ? slots._membersIdRef : slots.membersIdRef*/;
+          slots._members : slots.members)/* || slots._membersIdRef ? slots._membersIdRef : slots.membersIdRef*/;
       }
     }
-}
+  }
+
   /**
    * creates an new International Organisations object and adds it to the instances collection
    * @param slots
    */
-  static add(slots) {
+  static add( slots ) {
     let internationalOrganisation;
     try {
       internationalOrganisation = new InternationalOrganisation( slots );
@@ -37,145 +38,157 @@ class InternationalOrganisation {
       console.log( e.constructor.name + ": " + e.message );
       internationalOrganisation = null;
     }
-    
+
     if (internationalOrganisation) {
-      InternationalOrganisation.instances[internationalOrganisation.acronym] = internationalOrganisation;
+      InternationalOrganisation.instances[ internationalOrganisation.acronym ] = internationalOrganisation;
       console.log( "The internationalOrganisation " + internationalOrganisation.name + " has been added." );
     } else {
       console.log( "Error when adding internationalOrganisation." );
     }
   }
+
   /**
-   * retrieves all the internationalOrganisations saved in the LocalStorage and converts them
-   * back to objects
+   * retrieves all the internationalOrganisations saved in the LocalStorage
+   * and converts them back to objects
    */
-  static retrieveAllSaved() {
+  static retrieveAllData() {
     console.log( "Data retrieval entered." );
-    
-    let allInternationalOrganisationsString = "{}", allInternationalOrganisations, keys, i;
+
+    let allInternationalOrganisationsString = "{}",
+      allInternationalOrganisations, keys, i;
+
     try {
-      if (localStorage.getItem( "internationalOrganisations" )) {
-        allInternationalOrganisationsString = localStorage.getItem( "internationalOrganisations" );
-        
-      } else {
-        console.log( "No internationalOrganisations in storage." );
-      }
-    } catch (e) {
+      allInternationalOrganisationsString = localStorage.getItem(
+        "internationalOrganisations" );
+    }
+    catch (e) {
       console.log( "Error when retrieving data from LocalStorage:\n" + e );
     }
-    
-    allInternationalOrganisations = JSON.parse( allInternationalOrganisationsString );
-    keys = Object.keys( allInternationalOrganisations );
-    
-    // creates new internationalOrganisation objects according to the data and adds them to the
-    // instances collection
-    for (i = 0; i < keys.length; i += 1) {
-      InternationalOrganisation.add( allInternationalOrganisations[keys[i]] );
+
+    allInternationalOrganisations = JSON.parse(
+      allInternationalOrganisationsString );
+
+    if (allInternationalOrganisations) {
+      keys = Object.keys( allInternationalOrganisations );
+
+      // creates new internationalOrganisation objects according
+      // to the data and adds them to the instances collection
+      for (i = 0; i < keys.length; i += 1) {
+        InternationalOrganisation.add(
+          allInternationalOrganisations[ keys[ i ] ] );
+      }
+    }
+
+    else {
+      console.log("No internationalOrganisations in storage.");
     }
   }
-  
+
   /**
    * the information for a internationalOrganisation is updated according to the passed values
    */
-  update(slots) {
-    let oldInternationalOrganisation = util.cloneObject( InternationalOrganisation.instances[this.acronym] );
+  update( slots ) {
+    let oldInternationalOrganisation = util.cloneObject( InternationalOrganisation.instances[ this.acronym ] );
     let newInternationalOrganisation;
-    
+
     // to avoid UniquenessConstraintViolation
     this.destroy( slots.acronym );
-    
+
     try {
       newInternationalOrganisation = new InternationalOrganisation( slots );
     } catch (e) {
       console.log( e.constructor.name + ": " + e.message );
     }
-    
+
     // assures that a new internationalOrganisation was successfully created and that we update an
     // existing internationalOrganisation
     if (newInternationalOrganisation) {
-      
-      InternationalOrganisation.instances[newInternationalOrganisation.acronym] = newInternationalOrganisation;
+
+      InternationalOrganisation.instances[ newInternationalOrganisation.acronym ] = newInternationalOrganisation;
       console.log( "InternationalOrganisation " + newInternationalOrganisation.name + " updated. New data:\n"
-          + newInternationalOrganisation.toString() );
+        + newInternationalOrganisation.toString() );
     } else {
       this.add( oldInternationalOrganisation );
       console.log( "The internationalOrganisation " + slots.name + " could not be created." );
     }
   }
-  
-  
+
+
   /**
    * deletes the internationalOrganisation from the instances collection
    */
   destroy() {
     let internationalOrganisationName = this.name; //name is easier readable
-    delete InternationalOrganisation.instances[this.acronym]; //delete with ID
+    delete InternationalOrganisation.instances[ this.acronym ]; //delete with ID
     delete this;
     console.log( "Internaltional Organisation " + internationalOrganisationName + " deleted." );
   }
-  
+
   /**
    * writes all data from InternationalOrganisation.instances to the LocalStorage
    */
-  static saveAllData() {
+  static
+  saveAllData() {
     let allInternationalOrganisationsString, error = false;
-    
+
     try {
       allInternationalOrganisationsString = JSON.stringify( InternationalOrganisation.instances );
       localStorage.setItem( "internationalOrganisations", allInternationalOrganisationsString );
     }
     catch
-        (e) {
+      (e) {
       alert( "Data could not be saved!\n" + e );
       error = true;
     }
-    
+
     if (error) {
       console.log( "Error when saving data!" );
     } else {
       console.log( "Data saved: " + localStorage.getItem( "internationalOrganisations" ) );
     }
   }
-  
+
   /**
    * adds some internationalOrganisations to the app so functionality can be tested
    */
-  static createTestData() {
+  static
+  createTestData() {
     // errors don't need to be caught here, they are handled in the add method
     //not needed since creating test data is handled in c.app
     InternationalOrganisation.add( {
       _acronym: "UN",
       _name: "United nations",
-      _members: ["Germany", "France", "Russia"]
+      _members: [ "Germany", "France", "Russia" ]
     } );
 
     InternationalOrganisation.add( {
       _acronym: "WHO",
       _name: "World Health Organisation",
-      _members: ["Germany", "France", "Russia"]
+      _members: [ "Germany", "France", "Russia" ]
     } );
 
     InternationalOrganisation.add( {
       _acronym: "NATO",
       _name: "North Atlantic Treaty Organization",
-      _members: ["Germany", "France"]
+      _members: [ "Germany", "France" ]
     } );
-    
+
     InternationalOrganisation.saveAllData();
   }
-  
+
   /**
    * clears all international Organisation data in the localStorage and instead sets an empty
    * object string
    */
-  static clearAllData() {
+  static
+  clearAllData() {
     if (confirm( "Do you want to clear all data?" )) {
       InternationalOrganisation.instances = {};
       localStorage.setItem( "internationalOrganisations", "{}" );
       console.log( "Database cleared." );
     }
   }
-  
+
   toString() {
     let str = "Acronym: " + this.acronym + "\n\tFull name: " + this.name;
     if (this.members) {
@@ -183,45 +196,48 @@ class InternationalOrganisation {
     }
     return str;
   }
-  
+
   /**
    * ###########################################################################
    * CONSTRAINT CHECKS & SETTERS
    * ###########################################################################
    */
-  
-  static checkAcronym(myAcronym) {
+
+  static
+  checkAcronym( myAcronym ) {
     if (myAcronym) {
       if (!util.isNonEmptyString( myAcronym )) {
         return new RangeConstraintViolation( "An internationalOrganisation's acronym must be a" +
-            " non-empty string.", myAcronym );
+          " non-empty string.", myAcronym );
       }
     }
     return new NoConstraintViolation( myAcronym );
-    
+
   }
-  
-  static checkAcronymAsId(myId) {
+
+  static
+  checkAcronymAsId( myId ) {
     let constraintViolation = InternationalOrganisation.checkAcronym( myId );
-    
+
     // continue testing only if previous test successful
     //noinspection JSLint
     if (constraintViolation instanceof NoConstraintViolation) {
       if (!myId) {
         constraintViolation = new MandatoryValueConstraintViolation(
-            "An internationalOrganisation" + " always needs to have a acronym.", myId );
-      } else if (InternationalOrganisation.instances[myId]) {
+          "An internationalOrganisation" + " always needs to have a acronym.", myId );
+      } else if (InternationalOrganisation.instances[ myId ]) {
         constraintViolation = new UniquenessConstraintViolation( "An internationalOrganisation's" +
-            " acronym has to be unique.", myId );
+          " acronym has to be unique.", myId );
       }
     }
     return constraintViolation;
   }
-  
-  
-  set acronym(newAcronym) {
+
+
+  set
+  acronym( newAcronym ) {
     const validationResult = InternationalOrganisation.checkAcronymAsId( newAcronym );
-    
+
     //noinspection JSLint
     if (validationResult instanceof NoConstraintViolation) {
       this._acronym = newAcronym; // only valid values should enter the database
@@ -230,26 +246,29 @@ class InternationalOrganisation {
       throw validationResult;
     }
   }
-  
-  get acronym() {
+
+  get
+  acronym() {
     return this._acronym;
   }
-  
-  
-  static checkName(myName) {
+
+
+  static
+  checkName( myName ) {
     if (myName) {
       if (!util.isNonEmptyString( myName )) {
         return new RangeConstraintViolation( "A internationalOrganisation's name must be a" +
-            " non-empty string.", myName );
+          " non-empty string.", myName );
       }
     }
     return new NoConstraintViolation( myName );
-    
+
   }
-  
-  set name(newName) {
+
+  set
+  name( newName ) {
     const validationResult = InternationalOrganisation.checkName( newName );
-    
+
     //noinspection JSLint
     if (validationResult instanceof NoConstraintViolation) {
       this._name = newName; // only valid values should enter the database
@@ -258,29 +277,32 @@ class InternationalOrganisation {
       throw validationResult;
     }
   }
-  
-  get name() {
+
+  get
+  name() {
     return this._name;
   }
-  
-  static checkMember(myMember) { //check single Member
-    if (!myMember){
+
+  static
+  checkMember( myMember ) { //check single Member
+    if (!myMember) {
       return new NoConstraintViolation(); //Member is not Mandatory
     } else {
-      return Country.checkCountryId( myMember); //function checks if this ID exists
+      return Country.checkCountryId( myMember ); //function checks if this ID exists
     }
   }
-  
-  static checkMembers(myMembers){ //check Array of Members
+
+  static
+  checkMembers( myMembers ) { //check Array of Members
     let i, constraintViolation;
-    if (!Array.isArray( myMembers) && !(myMembers === undefined)){
+    if (!Array.isArray( myMembers ) && !(myMembers === undefined)) {
       return new RangeConstraintViolation( //possibly not needed
-          "The value of Members must be an array");
+        "The value of Members must be an array" );
     } else {
-      if (!(myMembers === undefined)){ //Members are not mandatory
-        for (i=0; i<myMembers.length; i+=1) {
-          constraintViolation = InternationalOrganisation.checkMember(myMembers[i])
-          if (!(constraintViolation instanceof NoConstraintViolation)){
+      if (!(myMembers === undefined)) { //Members are not mandatory
+        for (i = 0; i < myMembers.length; i += 1) {
+          constraintViolation = InternationalOrganisation.checkMember( myMembers[ i ] )
+          if (!(constraintViolation instanceof NoConstraintViolation)) {
             return constraintViolation;
           }
         }
@@ -288,10 +310,11 @@ class InternationalOrganisation {
     }
     return new NoConstraintViolation();
   }
-  
-  set members(newMembers) {
-    const validationResult = InternationalOrganisation.checkMembers( newMembers);
-    
+
+  set
+  members( newMembers ) {
+    const validationResult = InternationalOrganisation.checkMembers( newMembers );
+
     if (validationResult instanceof NoConstraintViolation) {
       this._members = newMembers; //only valid values
     } else {
@@ -299,8 +322,9 @@ class InternationalOrganisation {
       throw  validationResult;
     }
   }
-  
-  get members() {
+
+  get
+  members() {
     return this._members;
   }
 }

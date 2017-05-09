@@ -10,11 +10,12 @@
     <script src="src/c/initialize.js"></script>
     <script src="src/m/Country.js"></script>
     <script src="src/m/InternationalOrganisation.js"></script>
+    <script src="src/c/app.js"></script>
     <script src="src/v/internatOrgsMgmt.js"></script>
     <script type="text/javascript">
       //TODO update to new params, if necessary add form fields
       window.addEventListener( "load", pl.v.updateInternationalOrganisation.setupUserInterface );
-      window.addEventListener( "beforeunload", InternationalOrganisation.saveAllData );
+      window.addEventListener( "beforeunload", pl.c.app.saveAllData );
     </script>
 </head>
 <body>

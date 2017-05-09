@@ -13,8 +13,8 @@ pl.v.updateCountry = {
         selectCode = formObj["cCode"],
         fldSetReligion = document.getElementById( "cReligions" );
     let tempReligions = JSON.parse( JSON.stringify( ReligionEL.labels ) );
-    
-    Country.retrieveAllSaved();
+
+    pl.c.app.retrieveAllData();
     
     util.fillSelectWithOptionsFromArr( selectCode,
         (CountryCodeEL.labels) );
