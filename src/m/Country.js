@@ -554,7 +554,6 @@ class Country {
   }
 
   static checkReligions( myReligions ) {
-    console.log(myReligions);
     if (myReligions) { // myReligions should be an array
       if (!Array.isArray(myReligions)) {
         return new RangeConstraintViolation("Religions must be stored in an" +

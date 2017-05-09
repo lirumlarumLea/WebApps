@@ -15,7 +15,6 @@
     <script src="src/v/addCountry.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load", pl.v.addCountry.setupUserInterface );
-      //TODO update to new params, if necessary add form fields
     </script>
 </head>
 <body><h3>Add a country to the storage</h3>
@@ -24,6 +23,9 @@
     <form id="countryInput">
         <label>Name: <input id="cName"/></label><br/>
         <label>Code: <select id="cCode"></select><br/></label>
+        <label>Capital City: <select id="cCapital">
+            <option>---</option>
+        </select><br/></label>
         <label>Population: <input id="cPopulation"/></label><br/>
         <label><em>Life Expectancy:</em>
             <input id="cLifeExpectancy"/></label><br/>
