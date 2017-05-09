@@ -2,7 +2,7 @@
  * Created by Levin-Can on 06.05.2017.
  * Script for global create and delete operations
  */
-    "use strict";
+"use strict";
 /*
  var pl = {
  m: {},
@@ -32,7 +32,7 @@ pl.c.app = {
     Country.retrieveAllData();
     InternationalOrganisation.retrieveAllData();
 
-    },
+  },
 
   clearData: function () {
     try {

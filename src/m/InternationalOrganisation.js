@@ -1,5 +1,7 @@
 /**
  * Created by Levin-Can on 06.05.2017.
+ *
+ * model class for an international organisation
  */
 
 class InternationalOrganisation {
@@ -42,7 +44,7 @@ class InternationalOrganisation {
 
     if (internationalOrganisation) {
       InternationalOrganisation.instances[
-        internationalOrganisation.acronym ] = internationalOrganisation;
+        internationalOrganisation.acronym] = internationalOrganisation;
       console.log( "The internationalOrganisation " +
         internationalOrganisation.name + " has been added." );
     } else {
@@ -78,12 +80,12 @@ class InternationalOrganisation {
       // to the data and adds them to the instances collection
       for (i = 0; i < keys.length; i += 1) {
         InternationalOrganisation.add(
-          allInternationalOrganisations[ keys[ i ] ] );
+          allInternationalOrganisations[keys[i]] );
       }
     }
 
     else {
-      console.log("No internationalOrganisations in storage.");
+      console.log( "No internationalOrganisations in storage." );
     }
   }
 
@@ -93,7 +95,7 @@ class InternationalOrganisation {
    */
   update( slots ) {
     let oldInternationalOrganisation = util.cloneObject(
-      InternationalOrganisation.instances[ this.acronym ] );
+      InternationalOrganisation.instances[this.acronym] );
     let newInternationalOrganisation;
 
     // to avoid UniquenessConstraintViolation
@@ -111,7 +113,7 @@ class InternationalOrganisation {
     if (newInternationalOrganisation) {
 
       InternationalOrganisation.instances[
-        newInternationalOrganisation.acronym ] = newInternationalOrganisation;
+        newInternationalOrganisation.acronym] = newInternationalOrganisation;
       console.log( "InternationalOrganisation " +
         newInternationalOrganisation.name + " updated. New data:\n" +
         newInternationalOrganisation.toString() );
@@ -128,9 +130,8 @@ class InternationalOrganisation {
    */
   destroy() {
     let internationalOrganisationName = this.name; //name is easier readable
-    delete InternationalOrganisation.instances[ this.acronym ]; //delete with ID
-    delete this;
-    console.log( "Internaltional Organisation " +
+    delete InternationalOrganisation.instances[this.acronym]; //delete with ID
+    console.log( "International Organisation " +
       internationalOrganisationName + " deleted." );
   }
 
@@ -158,7 +159,7 @@ class InternationalOrganisation {
       console.log( "Error when saving data!" );
     } else {
       console.log( "Data saved: " + localStorage.getItem(
-        "internationalOrganisations" ) );
+          "internationalOrganisations" ) );
     }
   }
 
@@ -173,19 +174,19 @@ class InternationalOrganisation {
     InternationalOrganisation.add( {
       _acronym: "UN",
       _name: "United nations",
-      _members: [ "Germany", "France", "Russia" ]
+      _members: ["Germany", "France", "Russia"]
     } );
 
     InternationalOrganisation.add( {
       _acronym: "WHO",
       _name: "World Health Organisation",
-      _members: [ "Germany", "France", "Russia" ]
+      _members: ["Germany", "France", "Russia"]
     } );
 
     InternationalOrganisation.add( {
       _acronym: "NATO",
       _name: "North Atlantic Treaty Organization",
-      _members: [ "Germany", "France" ]
+      _members: ["Germany", "France"]
     } );
 
     InternationalOrganisation.saveAllData();
@@ -243,7 +244,7 @@ class InternationalOrganisation {
         constraintViolation = new MandatoryValueConstraintViolation(
           "An internationalOrganisation" +
           " always needs to have a acronym.", myId );
-      } else if (InternationalOrganisation.instances[ myId ]) {
+      } else if (InternationalOrganisation.instances[myId]) {
         constraintViolation = new UniquenessConstraintViolation(
           "An internationalOrganisation's" +
           " acronym has to be unique.", myId );
@@ -324,7 +325,7 @@ class InternationalOrganisation {
       if ((myMembers !== undefined)) { //Members are not mandatory
         for (i = 0; i < myMembers.length; i += 1) {
           constraintViolation =
-            InternationalOrganisation.checkMember( myMembers[ i ] );
+            InternationalOrganisation.checkMember( myMembers[i] );
           if (!(constraintViolation instanceof NoConstraintViolation)) {
             return constraintViolation;
           }

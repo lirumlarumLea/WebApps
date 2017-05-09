@@ -663,10 +663,9 @@ class Country {
 
   set cities( newCities ) {
     const validationResult = Country.checkCities( newCities );
-    let tempObj = {};
     // only valid values should enter the database
     if (validationResult instanceof NoConstraintViolation) {
-      this._cities = Object.assign({}, newCities, this._cities);
+      this._cities = Object.assign( {}, newCities, this._cities );
     } else {
       alert( validationResult.message );
       throw validationResult;

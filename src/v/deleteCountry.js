@@ -29,10 +29,10 @@ pl.v.deleteCountry = {
     select = document.getElementById( "selectCountry" );
 
     // confirm delete with user
-    valuesChecked = confirm( Country.instances[ select.value ].toString() +
+    valuesChecked = confirm( Country.instances[select.value].toString() +
       "\nDo you wish to delete this entry?" );
     if (valuesChecked) {
-      Country.instances[ select.value ].destroy();
+      Country.instances[select.value].destroy();
       select.remove( select.selectedIndex );
     }
   }

@@ -87,9 +87,9 @@ pl.v.updateCountry = {
       document.getElementById( "cCapital" ).value = country.capital.name;
       document.getElementById( "cPopulation" ).value = country.population;
       document.getElementById( "cLifeExpectancy" ).value =
-        country.lifeExpectancy? country.lifeExpectancy : "";
-      ["cCode", "cCapital", "cPopulation", "cLifeExpectancy", "cReligions"].
-      forEach(
+        country.lifeExpectancy ? country.lifeExpectancy : "";
+      ["cCode", "cCapital", "cPopulation", "cLifeExpectancy",
+        "cReligions"].forEach(
         function ( p ) {
           // delete custom validation error message which may have been set
           // before

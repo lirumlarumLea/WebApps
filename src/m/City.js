@@ -60,7 +60,7 @@ class City {
   }
 
   static checkNameAsRefId( newName ) {
-    if (!City.instances[ newName ]) {
+    if (!City.instances[newName]) {
       return new ReferentialIntegrityConstraintViolation(
         "The city name you entered is unknown.", newName );
     }
@@ -95,8 +95,8 @@ class City {
     }
 
     if (tempCity) {
-      City.instances[ cityName ] = tempCity;
-      console.log( "City " + City.instances[ cityName ].name + " added to" +
+      City.instances[cityName] = tempCity;
+      console.log( "City " + City.instances[cityName].name + " added to" +
         " database." );
     } else {
       console.log( "Error when creating city." );
@@ -132,7 +132,7 @@ class City {
       // creates new city objects according to the data and adds them to the
       // instances collection
       for (i = 0; i < keys.length; i += 1) {
-        City.add( keys[ i ] );
+        City.add( keys[i] );
       }
     } else {
       console.log( "No cities in storage." );
@@ -143,15 +143,15 @@ class City {
    * destroys a city instance
    */
   destroy() {
-    let cityName = this.name, keys = Object.keys(Country.instances), i;
+    let cityName = this.name, keys = Object.keys( Country.instances ), i;
     // on delete cascade (if a capital is deleted, then the country is too)
     for (i = 0; i < keys.length; i += 1) {
       if (Country.instances[keys[i]] && this.equals(
-        Country.instances[keys[i]].capital)) {
+          Country.instances[keys[i]].capital )) {
         Country.instances[keys[i]].destroy();
       }
     }
-    delete City.instances[ this.name ];
+    delete City.instances[this.name];
 
     console.log( "City " + cityName + " deleted." );
   }
@@ -197,9 +197,9 @@ class City {
   }
 
   static clearAllData() {
-    let i, keys = Object.keys(City.instances);
+    let i, keys = Object.keys( City.instances );
 
-    for ( i = 0; i < keys.length; i += 1) {
+    for (i = 0; i < keys.length; i += 1) {
       City.instances[keys[i]].destroy();
     }
 

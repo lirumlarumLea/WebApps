@@ -1,6 +1,6 @@
 /**
  * Created by Lea Weber on 08.05.2017.
- * 
+ *
  * View code for adding a city
  */
 
@@ -8,7 +8,7 @@ pl.v.addCity = {
   /**
    * necessary tasks for preparing the UI
    */
-  setupUserInterface: function (  ) {
+  setupUserInterface: function () {
     const inputForm = document.forms["cityInput"];
 
     pl.c.app.retrieveAllData();
@@ -19,12 +19,12 @@ pl.v.addCity = {
         City.checkNameAsId( inputForm["cityName"].value ).message );
     } );
 
-    inputForm["saveBtn"].addEventListener("click", function () {
+    inputForm["saveBtn"].addEventListener( "click", function () {
       pl.v.addCity.handleSaveBtnClickEvent();
-    });
+    } );
 
     // neutralize the submit event
-    inputForm.addEventListener( "submit", function (e) {
+    inputForm.addEventListener( "submit", function ( e ) {
       e.preventDefault();
     } );
 
@@ -35,7 +35,7 @@ pl.v.addCity = {
   /**
    * handles click on save button
    */
-  handleSaveBtnClickEvent: function (  ) {
+  handleSaveBtnClickEvent: function () {
     const inputForm = document.forms["cityInput"],
       newName = inputForm["cityName"].value;
 
@@ -49,4 +49,4 @@ pl.v.addCity = {
       inputForm.reset();
     }
   }
-}
+};
