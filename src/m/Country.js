@@ -9,12 +9,19 @@
  * CONSTRUCTOR and DATA MGMT ###################################################
  * #############################################################################
  */
+/* global -CountryCodeEL */
 const CountryCodeEL = new Enumeration( {
   "DE": "Germany", "FR": "France", "RU": "Russia", "MC": "Monaco",
   "IN": "India"
 } );
-const ReligionEL = new Enumeration( [ "Catholic", "Protestant", "Orthodox",
-  "Hindu", "Muslim", "Jewish" ] );
+
+/* global -ReligionsEL */
+const ReligionsEL = new Enumeration( ["Catholic",
+  "Protestant", "Orthodox", "Hindu",
+  "Muslim", "Jewish" ] );
+// const ReligionsEL = new Enumeration( {"Catholic": "Catholic",
+//   "Protestant": "Protestant", "Orthodox": "Orthodox", "Hindu": "Hindu",
+//   "Muslim": "Muslim", "Jewish": "Jewish" } );
 
 class Country {
   /**
@@ -23,6 +30,13 @@ class Country {
    * @throws ConstraintViolation error via setters
    */
   constructor( slots ) {
+
+    this._name = "n.a."; // [1], NonEmptyString{id}
+    this._code = CountryCodeEL.DE; // [1], {key}
+    this._population = 1; // [1], PositiveInteger
+    this._capital = new City( "default" ); // [1], City
+    this._religions = [];
+
     if (arguments.length === 0) {
       // first, assign default values
       this.name = "n.a."; // [1], NonEmptyString{id}
@@ -50,6 +64,7 @@ class Country {
       if (slots.religions || slots._religions) {
         this.religions = slots._religions ?
           slots._religions : slots.religions;
+        console.log(this.religions);
       }
     }
   }
@@ -74,6 +89,7 @@ class Country {
     } else {
       console.log( "Error when adding country." );
     }
+    console.log(Country.instances[country.name]);
   }
 
 
@@ -118,6 +134,9 @@ class Country {
     // replace capital city reference with object
     countrySlots.capital = City.instances[countryRec.capitalRef];
     delete countrySlots.capitalRef;
+
+    countrySlots.religions = countryRec.religions ?
+      (countryRec.religions).slice() : (countryRec._religions).slice();
 
     return countrySlots;
   }
@@ -224,6 +243,8 @@ class Country {
       countryRow.capitalRef = this.capital.name;
       delete countryRow.capital;
 
+      countryRow.religions = (this.religions).slice();
+
     return countryRow;
   }
 
@@ -238,15 +259,14 @@ class Country {
       City.createTestData();
     }
 
-    Country.add( {
-      _name: "Germany",
-      _code: CountryCodeEL.DE,
+    let temp = {_name: "Germany",
+      _code: CountryCodeEL.IN,
       _capital: City.instances[ "Berlin" ],
       _population: 80854408,
       _lifeExpectancy: 80.57,
-      _religions: [ ReligionEL.CATHOLIC, ReligionEL.PROTESTANT,
-        ReligionEL.MUSLIM ]
-    } );
+      _religions: [ReligionsEL.CATHOLIC]};
+    Country.add( temp);
+
 
     Country.add( {
       _name: "France",
@@ -254,7 +274,7 @@ class Country {
       _capital: City.instances[ "Paris" ],
       _population: 66553766,
       _lifeExpectancy: 81.75,
-      _religions: [ ReligionEL.CATHOLIC, ReligionEL.MUSLIM ]
+      _religions: [ ReligionsEL["CATHOLIC"], ReligionsEL["MUSLIM"] ]
     } );
 
     Country.add( {
@@ -263,7 +283,7 @@ class Country {
       _capital: City.instances[ "Moscow" ],
       _population: 142423773,
       _lifeExpectancy: 70.47,
-      _religions: [ ReligionEL.ORTHODOX, ReligionEL.MUSLIM ]
+      _religions: [ ReligionsEL["ORTHODOX"], ReligionsEL["MUSLIM"] ]
     } );
 
     Country.add( {
@@ -272,7 +292,7 @@ class Country {
       _capital: City.instances[ "Monaco" ],
       _population: 30535,
       _lifeExpectancy: 89.52,
-      _religions: [ ReligionEL.CATHOLIC ]
+      _religions: [ ReligionsEL["CATHOLIC"] ]
     } );
 
     Country.saveAllData();
@@ -304,14 +324,15 @@ class Country {
     let str = "Country: " + this.name + "\n\tCountry Code: " + this.code + "" +
       "\n\tCapital City: " + this.capital.name +
       "\n\tPopulation: " +  this.population;
+    let i;
 
     if (this.lifeExpectancy) {
       str += ("\n\tAv. Life Expectancy: " + this.lifeExpectancy.toString());
     }
     if (this.religions) {
       str += "\n\tReligions: ";
-      for (let i = 0; i < this.religions.length; i += 1) {
-        str += ReligionEL.labels[ this.religions[ i ] ];
+      for (i = 0; i < this.religions.length; i += 1) {
+        str += ReligionsEL.labels[ this.religions[ i ] ];
         if (i !== this.religions.length - 1) {
           str += ", ";
         }
@@ -371,11 +392,12 @@ class Country {
 
   static checkCode( myCode ) {
     // mandatory
+
     if (myCode === 0 || myCode !== undefined) {
 
       // valid country code
       if (!util.isIntegerOrIntegerString( myCode ) ||
-        myCode < 0 || myCode > CountryCodeEL.MAX) {
+        myCode < 0 || myCode >= CountryCodeEL.MAX) {
         return new RangeConstraintViolation( "The entered country code is" +
           " unknown.", myCode );
       }
@@ -532,13 +554,23 @@ class Country {
   }
 
   static checkReligions( myReligions ) {
-    if (myReligions) {
+    console.log(myReligions);
+    if (myReligions) { // myReligions should be an array
+      if (!Array.isArray(myReligions)) {
+        return new RangeConstraintViolation("Religions must be stored in an" +
+          " array.", myReligions);
+      }
+
       for (let i = 0; i < myReligions.length; i += 1) {
+
         if (!util.isIntegerOrIntegerString( myReligions[ i ] ) ||
-          myReligions[ i ] < 0 || myReligions[ i ] > ReligionEL.MAX) {
+          myReligions[ i ] < 0 || myReligions[ i ] > ReligionsEL.MAX) {
+
           return new RangeConstraintViolation( "The religion " +
-            myReligions[ i ] + " is unknown.", myReligions );
+            ReligionsEL.enumLitNames[myReligions[ i ]] +
+            " is unknown.", myReligions );
         }
+
       }
     }
     return new NoConstraintViolation( myReligions );
@@ -546,7 +578,6 @@ class Country {
 
   set religions( newReligions ) {
     const validationResult = Country.checkReligions( newReligions );
-    //noinspection JSLint
     if (validationResult instanceof NoConstraintViolation) {
       // only valid values should enter the database
       this._religions = newReligions;
@@ -554,6 +585,7 @@ class Country {
       alert( validationResult.message );
       throw validationResult;
     }
+    console.log("newReligions: " + newReligions);
   }
 
   get religions() {
