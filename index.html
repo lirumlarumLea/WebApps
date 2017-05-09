@@ -14,9 +14,9 @@
     <script src="src/c/app.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load",
-        Country.retrieveAllSaved );
+        pl.c.app.retrieveAllData );
       window.addEventListener( "beforeunload",
-        Country.saveAllData );
+        pl.c.app.saveAllData );
     </script>
 </head>
 <body>
@@ -82,7 +82,7 @@
             Add a city
         </button>
         <br/>
-        <button type="button" onclick="window.location.href='updateCity.html';">
+        <button type="button" disabled="disabled" onclick="window.location.href='updateCity.html';">
             Update a city's data
         </button>
 

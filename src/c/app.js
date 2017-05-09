@@ -2,6 +2,7 @@
  * Created by Levin-Can on 06.05.2017.
  * Script for global create and delete operations
  */
+    "use strict";
 /*
  var pl = {
  m: {},
@@ -17,6 +18,21 @@ pl.c.app = {
     Country.createTestData();
     InternationalOrganisation.createTestData();
   },
+
+  saveAllData: function () {
+
+    Country.saveAllData();
+    City.saveAllData();
+    InternationalOrganisation.saveAllData();
+  },
+
+  retrieveAllData: function () {
+
+    City.retrieveAllData();
+    Country.retrieveAllSaved();
+    InternationalOrganisation.retrieveAllSaved();
+
+    },
 
   clearData: function () {
     try {

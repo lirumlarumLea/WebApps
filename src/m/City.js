@@ -51,7 +51,7 @@ class City {
       if (!newName) {
         constraintViolation = new MandatoryValueConstraintViolation(
           "A city always needs to have a name.", newName );
-      } else if (City.instances[ newName ]) {
+      } else if (Object.keys(City.instances).indexOf(newName) !== -1) {
         constraintViolation = new UniquenessConstraintViolation( "A city's" +
           " name has to be unique.", newName );
       }
@@ -82,21 +82,22 @@ class City {
 
   /**
    * adds city to local storage
-   * @param name
+   * @param cityName
    */
-  static add( name ) {
+  static add( cityName ) {
     let tempCity;
 
     try {
-      tempCity = new City( name );
+      tempCity = new City( cityName );
     } catch (e) {
       tempCity = null;
       console.log( e.constructor.name + ": " + e.message );
     }
 
     if (tempCity) {
-      City.instances[ name ] = tempCity;
-      console.log( "City " + name + " added to database." );
+      City.instances[ cityName ] = tempCity;
+      console.log( "City " + City.instances[cityName].toString() + " added to" +
+        " database." );
     } else {
       console.log( "Error when creating city." );
     }
@@ -130,7 +131,7 @@ class City {
     // creates new city objects according to the data and adds them to the
     // instances collection
     for (i = 0; i < keys.length; i += 1) {
-      City.add( allCities[ keys[ i ] ] );
+      City.add( keys[ i ] );
     }
   }
 
