@@ -11,18 +11,19 @@ pl.v.addCountry = {
       selectCode = inputForm["cCode"],
       selectCapital = inputForm["cCapital"],
       fldSetReligion = document.getElementById( "cReligions" ),
-      tempReligions = JSON.parse( JSON.stringify( ReligionsEL.labels ) );
+      tempReligions = JSON.parse( JSON.stringify( ReligionsEL.labels ) ),
+      selectCities = inputForm["cCities"];
 
     pl.c.app.retrieveAllData();
 
     util.fillSelectWithOptionsFromArr( selectCode,
-      (CountryCodeEL.labels) );
-    util.fillSelectWithOptions( City.instances, selectCapital,
-      "name", "name" );
+      (CountryCodeEL.labels), true );
+    util.fillSelectWithOptionsFromArr( selectCapital,
+      Object.keys( City.instances ), false );
     util.createChoiceWidget( fldSetReligion, "religion", [], "checkbox",
       tempReligions.splice( 1 ) );
-    util.selectMultipleValues( inputForm["cCities"],
-      Object.keys( City.instances ) );
+    util.fillSelectWithOptionsFromArr( selectCities,
+      Object.keys( City.instances ), false );
 
     // check fields on input
     inputForm["cName"].addEventListener( "input", function () {
@@ -32,8 +33,7 @@ pl.v.addCountry = {
 
     inputForm["cCode"].addEventListener( "input", function () {
       inputForm["cCode"].setCustomValidity(
-        Country.checkCode(
-          parseInt( inputForm["cCode"].value, 10 ) ).message );
+        Country.checkCode( selectCode.value ).message );
     } );
     selectCapital.addEventListener( "input", function () {
       selectCapital.setCustomValidity(
@@ -81,11 +81,17 @@ pl.v.addCountry = {
       name: inputForm["cName"].value,
       code: inputForm["cCode"].value,
       capital: City.instances[inputForm["cCapital"].value],
-      population: inputForm["cPopulation"].value,
-      cities: inputForm["cCities"].selectedOptions
+      population: inputForm["cPopulation"].value
       // lifeExpectancy see below
       // religions see below
     };
+
+    let myCities = {};
+    for (let el of (inputForm["cCities"].selectedOptions)) {
+      myCities[el.text] = City.instances[el.text];
+    }
+    slots.cities =  myCities;
+
     let values = fldSetReligion.childNodes;
     let relArr = [], i;
 
@@ -105,7 +111,7 @@ pl.v.addCountry = {
     inputForm["cPopulation"].setCustomValidity(
       Country.checkPopulation( slots.population ).message );
     inputForm["cCities"].setCustomValidity(
-      Country.checkCities( slots.cities).message );
+      Country.checkCities( slots.cities ).message );
     // optional value
     if (inputForm["cLifeExpectancy"].value) {
       slots.lifeExpectancy = inputForm["cLifeExpectancy"].value;

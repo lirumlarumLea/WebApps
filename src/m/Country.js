@@ -544,6 +544,7 @@ class Country {
       } else {
         // known city
         if (Object.keys( City.instances ).indexOf( myCapital.name ) === -1) {
+          console.log(myCapital.name);
           return new ReferentialIntegrityConstraintViolation( "The city " +
             myCapital.name + " is unknown.", myCapital );
         }
