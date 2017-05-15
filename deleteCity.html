@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>Delete International Organisation</title>
+    <title>Delete Country</title>
     <script src="lib/browserShims.js"></script>
     <script src="lib/util.js"></script>
     <script src="lib/errorTypes.js"></script>
@@ -12,18 +12,20 @@
     <script src="src/m/Country.js"></script>
     <script src="src/m/InternationalOrganisation.js"></script>
     <script src="src/c/app.js"></script>
-    <script src="src/v/internatOrgsMgmt.js"></script>
+    <script src="src/v/deleteCity.js"></script>
     <script type="text/javascript">
-      window.addEventListener( "load", pl.v.deleteInternationalOrganisation.setupUserInterface );
+      window.addEventListener( "load", pl.v.deleteCity.setupUserInterface );
+      // save all data on window/tab closed
+      window.addEventListener( "beforeunload", pl.c.app.saveAllData );
     </script>
 </head>
 <body>
-<h3>Delete entry of an international Organisation</h3>
+<h3>Delete entry of a city</h3>
 <div>
-    <p>Please select the international Organisation you want to remove from storage.</p>
-    <form id="internationalOrganisationDelete">
-        <label>Choose an international Organisation:
-            <select id="selAcronym">
+    <p>Please select the city you want to remove from storage.</p>
+    <form id="cityDelete">
+        <label>Choose a city:
+            <select id="selectCity">
                 <option value="">./.</option>
             </select>
         </label>

@@ -8,10 +8,12 @@
     <script src="lib/errorTypes.js"></script>
     <script src="lib/Enumeration.js"></script>
     <script src="src/c/initialize.js"></script>
+    <script src="src/m/City.js"></script>
     <script src="src/m/Country.js"></script>
-    <script src="src/v/addCountry.js"></script>
     <script src="src/m/InternationalOrganisation.js"></script>
-    <script src="src/v/internationalOrganisations.js"></script>
+    <script src="src/c/app.js"></script>
+    <script src="src/v/addCountry.js"></script>
+    <script src="src/v/internatOrgsMgmt.js"></script>
     <script type="text/javascript">
       window.addEventListener( "load", pl.v.addInternationalOrganisation.setupUserInterface );
       //TODO update to new params, if necessary add form fields
@@ -22,8 +24,8 @@
 <div>
     <form id="internationalOrganisationInput">
         <label>Acronym: <input id="ioAcronym"/></label><br/>
-        <label>Name: <input id="ioName"/></label><br/>
-        <select multiple="multiple" id="ioSelMembers"></select><br/>
+        <label>Name: <input id="ioName"/></label><br/><br/>
+        <label>Members: <select multiple="multiple" id="ioSelMembers"></select></label><br/>
         <button type="button" id="saveBtn">Save</button>
     </form>
 </div>

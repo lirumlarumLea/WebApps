@@ -8,12 +8,14 @@
     <script src="lib/errorTypes.js"></script>
     <script src="lib/Enumeration.js"></script>
     <script src="src/c/initialize.js"></script>
+    <script src="src/m/City.js"></script>
     <script src="src/m/Country.js"></script>
+    <script src="src/m/InternationalOrganisation.js"></script>
+    <script src="src/c/app.js"></script>
     <script src="src/v/updateCountry.js"></script>
     <script type="text/javascript">
-      //TODO update to new params, if necessary add form fields
       window.addEventListener( "load", pl.v.updateCountry.setupUserInterface );
-      window.addEventListener( "beforeunload", Country.saveAllData );
+      window.addEventListener( "beforeunload", pl.c.app.saveAllData );
     </script>
 </head>
 <body>
@@ -26,16 +28,24 @@
     <form id="countryUpdate">
         <label>Name: <select id="selName">
             <option>---</option>
-        </select></label><br/>
-        <label>Name: <output id="cName"></output></label><br />
+        </select></label><br/><br/>
+        <label>Name:
+            <output id="cName"></output>
+        </label><br/>
         <label>Code: <select id="cCode"></select><br/></label>
+        <label>Capital City: <select id="cCapital">
+            <option>---</option>
+        </select><br/></label>
         <label>Population: <input id="cPopulation"/></label><br/>
         <label><em>Life Expectancy:</em>
             <input id="cLifeExpectancy"/></label><br/>
         <fieldset id="cReligions">
-            <label>current values: <output id="txtRels"></output></label><br />
             <legend>Religion</legend>
+            <label>current values:
+                <output id="txtRels"></output>
+            </label><br/>
         </fieldset>
+        <label>Members: <select multiple="multiple" id="cCities"></select></label><br/>
         <br/>
         <button type="button" id="saveBtn">Save</button>
     </form>
