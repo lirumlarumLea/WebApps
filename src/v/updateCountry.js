@@ -7,23 +7,23 @@
 pl.v.updateCountry = {
   setupUserInterface: function () {
     const formObj = document.forms["countryUpdate"],
-      //selCountry = document.getElementById( "selName" ),
       selCountry = document.getElementById( "selName" ),
       selectCode = formObj["cCode"],
       selectCapital = formObj["cCapital"],
-      fldSetReligion = document.getElementById( "cReligions" );
+      fldSetReligion = document.getElementById( "cReligions" ),
+      selectCities = formObj["cCities"];
     let tempReligions = JSON.parse( JSON.stringify( ReligionsEL.labels ) );
 
     pl.c.app.retrieveAllData();
 
     util.fillSelectWithOptionsFromArr( selectCode,
-      (CountryCodeEL.labels) );
+      (CountryCodeEL.labels), true );
     util.fillSelectWithOptions( City.instances, selectCapital,
       "name", "name" );
     util.createChoiceWidget( fldSetReligion, "religion", [], "checkbox",
-      tempReligions.splice( 1 ) );
-    util.selectMultipleValues( formObj["cCities"],
-      Object.keys( City.instances ) );
+      tempReligions.splice( 0 ) );
+    util.fillSelectWithOptionsFromArr( selectCities,
+      Object.keys( City.instances ), false );
 
     util.fillSelectWithOptions( Country.instances, selCountry, "name", "name" );
 
@@ -52,12 +52,25 @@ pl.v.updateCountry = {
         Country.checkLifeExpectancy(
           formObj["cLifeExpectancy"].value ).message );
     } );
+
     formObj["cReligions"].addEventListener( "input", function () {
+      let values = formObj.cReligions.childNodes;
+      let relArr = [], i;
+      for (i = 5; i < values.length; i += 1) {
+        if (values[i].firstChild.checked) {
+          relArr.push( parseInt( values[i].firstChild.value, 10 ) );
+        }
+      }
       formObj["cReligions"].setCustomValidity(
         Country.checkReligions(
-          formObj["cReligions"].value ).message );
+          relArr ).message );
     } );
+
     formObj["cCities"].addEventListener( "input", function () {
+      let myCities = {};
+      for (let el of (formObj["cCities"].selectedOptions)) {
+        myCities[el.text] = City.instances[el.text];
+      }
       formObj["cCities"].setCustomValidity(
         Country.checkCities( formObj["cCities"].selectedOptions ).message );
     } );
@@ -80,12 +93,16 @@ pl.v.updateCountry = {
     window.addEventListener( "beforeunload", Country.saveAllData );
   },
 
-  // updates the values in the input/output fields
+
+  /**
+   * updates the values in the input/output fields
+   */
   handleCountrySelectEvent: function () {
-    //noinspection JSLint
     const formObj = document.forms["countryUpdate"];
     const selectedName = document.getElementById( "selName" ).value;
     const country = Country.instances[selectedName];
+
+    formObj.reset();
 
     if (country) {
       document.getElementById( "cName" ).value = country.name;
@@ -94,6 +111,27 @@ pl.v.updateCountry = {
       document.getElementById( "cPopulation" ).value = country.population;
       document.getElementById( "cLifeExpectancy" ).value =
         country.lifeExpectancy ? country.lifeExpectancy : "";
+
+      // for religions
+      let relArr = country.religions;
+      if (relArr) {
+        let values = formObj.cReligions.elements, i, j;
+
+        for (i = 0; i < relArr.length; i += 1) {
+          for (j = 0; j < values.length; j += 1) {
+
+            if (values[j].value - 1 === relArr[i]) {
+              values[j].checked = true;
+              break;
+            }
+          }
+        }
+      }
+
+
+      util.selectMultipleValues( formObj["cCities"],
+        Object.keys( country.cities ) );
+
       ["cCode", "cCapital", "cPopulation", "cLifeExpectancy",
         "cReligions"].forEach(
         function ( p ) {
@@ -106,18 +144,24 @@ pl.v.updateCountry = {
     }
   },
 
-  // saves the possibly altered values
+  /**
+   * saves the possibly altered values
+   *
+   * no validation here, see comment at end of method
+   */
   handleSaveBtnClickEvent: function () {
     const slots = {};
     let userConfirmed;
-    //noinspection JSLint
     const formObj = document.forms["countryUpdate"];
 
     slots.name = formObj.selName.value;
     slots.code = formObj.cCode.value;
     slots.capital = City.instances[formObj["cCapital"].value];
     slots.population = document.getElementById( "cPopulation" ).value;
-    // lifeExpectancy see below
+    // optional value
+    if (formObj["cLifeExpectancy"].value) {
+      slots.lifeExpectancy = parseInt( formObj["cLifeExpectancy"].value, 10 );
+    }
 
     // for religions
     let values = formObj.cReligions.childNodes;
@@ -127,43 +171,42 @@ pl.v.updateCountry = {
         relArr.push( parseInt( values[i].firstChild.value, 10 ) );
       }
     }
-
-    // check all newly entered values
-    formObj["cCode"].setCustomValidity(
-      Country.checkCode( slots.code ).message );
-    formObj["cCapital"].setCustomValidity(
-      Country.checkCapital( slots.capital ).message );
-    formObj["cPopulation"].setCustomValidity(
-      Country.checkPopulation( slots.population ).message );
-    // optional value
-    if (formObj["cLifeExpectancy"].value) {
-      slots.lifeExpectancy = formObj["cLifeExpectancy"].value;
-      formObj["cLifeExpectancy"].setCustomValidity(
-        Country.checkLifeExpectancy(
-          slots.lifeExpectancy ).message );
-    }
     if (relArr !== []) {
       slots.religions = relArr;
-      formObj["cReligions"].setCustomValidity(
-        Country.checkReligions(
-          slots.religions ).message );
     }
 
+    // cities
+    let myCities = {};
+    for (let el of (formObj["cCities"].selectedOptions)) {
+      myCities[el.text] = City.instances[el.text];
+    }
+    slots.cities = myCities;
+
+
     // confirm update with user
-    let str = "New values:\n\tName: " + slots.name + "\n\tCode: " +
+    let outputStr = "New values:\n\tName: " + slots.name + "\n\tCode: " +
       CountryCodeEL.labels[slots.code] + "\n\tCapital city: " +
       slots.capital.name + "\n\tPopulation: " + slots.population;
     if (slots.lifeExpectancy) {
-      str += "\n\tLife Expectancy: " + slots.lifeExpectancy;
+      outputStr += "\n\tLife Expectancy: " + slots.lifeExpectancy;
     }
     if (slots.religions) {
-      str += "\n\tReligions: " + slots.religions;
+      outputStr += "\n\tReligions: " + slots.religions;
     }
+    outputStr += "\n\tCities: " + Object.keys( slots.cities );
 
-    userConfirmed = confirm( str + "\nPlease confirm." );
-    if (formObj.checkValidity() && userConfirmed) {
+    userConfirmed = confirm( outputStr + "\nPlease confirm." );
+
+    // formObj.checkValidity() cannot be used: Unique values throw errors
+    // since they are already in the database during input. However, the
+    // values are still tested in the update method,
+    // so validity is still granted.
+    if (userConfirmed) {
+      console.log( "test" );
       Country.instances[slots.name].update( slots );
       formObj.reset();
+    } else {
+      console.log( "failed" );
     }
 
   }

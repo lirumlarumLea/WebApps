@@ -21,7 +21,7 @@ pl.v.addCountry = {
     util.fillSelectWithOptionsFromArr( selectCapital,
       Object.keys( City.instances ), false );
     util.createChoiceWidget( fldSetReligion, "religion", [], "checkbox",
-      tempReligions.splice( 1 ) );
+      tempReligions.splice() );
     util.fillSelectWithOptionsFromArr( selectCities,
       Object.keys( City.instances ), false );
 
@@ -49,14 +49,32 @@ pl.v.addCountry = {
         Country.checkLifeExpectancy(
           inputForm["cLifeExpectancy"].value ).message );
     } );
+
+
     inputForm["cReligions"].addEventListener( "input", function () {
+      let values = fldSetReligion.childNodes;
+      let relArr = [], i;
+
+      // i= 0-2 hold plain text and the legend element, checkboxes start at 3
+      for (i = 3; i < values.length; i += 1) {
+        if (values[i].firstChild.checked) {
+          relArr.push( parseInt( values[i].firstChild.value, 10 ) );
+        }
+      }
+
       inputForm["cReligions"].setCustomValidity(
         Country.checkReligions(
-          inputForm["cReligions"].value ).message );
+          relArr ).message );
     } );
+
+
     inputForm["cCities"].addEventListener( "input", function () {
+      let myCities = {};
+      for (let el of (inputForm["cCities"].selectedOptions)) {
+        myCities[el.text] = City.instances[el.text];
+      }
       inputForm["cCities"].setCustomValidity(
-        Country.checkCities( inputForm["cCities"].selectedOptions ).message );
+        Country.checkCities( myCities ).message );
     } );
 
     // save new country according to current input in fields

@@ -182,7 +182,7 @@ class Country {
       console.log( "Country " + newCountry.name + " updated. New data:\n" +
         newCountry.toString() );
     } else {
-      this.add( oldCountry );
+      Country.instances[oldCountry.name] = oldCountry;
       console.log( "The country " + slots.name + " could not be created." );
     }
   }
@@ -211,7 +211,7 @@ class Country {
         }
       }
     }
-    delete Country.instances[this.name];
+    delete Country.instances[countryName];
 
     console.log( "Country " + countryName + " deleted." );
 
@@ -365,9 +365,9 @@ class Country {
 
 
   toString() {
-    let str = "Country: " + this.name + "\n\tCountry Code: " + this.code + "" +
-      "\n\tCapital City: " + this.capital.name +
-      "\n\tPopulation: " + this.population;
+    let str = "Country: " + this.name + "\n\tCountry Code: " +
+      CountryCodeEL.labels[this.code] + "" + "\n\tCapital City: " +
+      this.capital.name + "\n\tPopulation: " + this.population;
     let i, keys;
 
     // optional value
