@@ -203,7 +203,10 @@ class Country {
       //loop through the array to delete the right element
       for (j = 0; j < internationalOrganisation.members.length; j += 1) {
         if (internationalOrganisation.members[j] === countryName) {
-          delete internationalOrganisation.members[j];
+
+          internationalOrganisation.members.splice(
+            internationalOrganisation.members.indexOf(countryName), 1
+          );
         }
       }
     }
