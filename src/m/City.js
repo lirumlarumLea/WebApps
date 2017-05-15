@@ -141,9 +141,14 @@ class City {
 
   /**
    * destroys a city instance
+   *
+   * if needed, it cascades and deletes the country where it is a capital
+   * removes city from the country's cities map
    */
   destroy() {
-    let cityName = this.name, keys = Object.keys( Country.instances ), i;
+    let cityName = this.name, keys = Object.keys( Country.instances ), i,
+      country;
+
     // on delete cascade (if a capital is deleted, then the country is too)
     for (i = 0; i < keys.length; i += 1) {
       if (Country.instances[keys[i]] && this.equals(
@@ -151,6 +156,17 @@ class City {
         Country.instances[keys[i]].destroy();
       }
     }
+
+    // check if city needs to be deleted from a country's cities
+    // refresh keys because values might have been deleted
+    keys = Object.keys(Country.instances);
+    for (i = 0; i < keys.length; i += 1) {
+      country = Country.instances[keys[i]];
+      if (util.mapContains(country.cities, cityName)) {
+        delete country.cities[cityName];
+      }
+    }
+
     delete City.instances[this.name];
 
     console.log( "City " + cityName + " deleted." );

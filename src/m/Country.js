@@ -67,6 +67,7 @@ class Country {
           slots._religions : slots.religions;
       }
 
+      // [1..*] map, always contains capital
       if (slots.cities || slots._cities) {
         this.cities = slots._cities ? slots._cities : slots.cities;
       }
@@ -677,6 +678,20 @@ class Country {
 
   get cities() {
     return this._cities;
+  }
+
+  /**
+   * adds a city to this country's cities map
+   * @param city - can be id (name) oder object
+   */
+  addCity(city) {
+    let cityName;
+    if (city instanceof Object) {
+      cityName = city.name;
+    } else {
+      cityName = city;
+    }
+    this.cities[cityName] = City.instances[cityName];
   }
 
   static checkCities( myCity ) {

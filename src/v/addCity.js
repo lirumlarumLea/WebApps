@@ -11,7 +11,7 @@ pl.v.addCity = {
   setupUserInterface: function () {
     const inputForm = document.forms["cityInput"];
 
-    pl.c.app.retrieveAllData();
+    City.retrieveAllData();
 
     // check field on input
     inputForm["cityName"].addEventListener( "input", function () {
