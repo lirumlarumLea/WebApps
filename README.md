@@ -4,15 +4,12 @@ stored.
 It was implemented during a university class on Web Applications.
 
 ###Repository
-https://github.com/leusclev/WebApps
+https://github.com/lirumlarumLea/WebApps
 
 ###Work assignment
-* International organisation model class
-* International organisation CRUD-services
-* Country association in Int. Orgs.
+Ole Stognief:
+* bidirectional association with cities
 
 Lea Weber:
-* City model class
-* City CRUD-services
-* Capital city association in Country class
-* Cities association in Country class
+* debug old errors
+* bidirectional association with cities
