@@ -6,21 +6,18 @@
 "use strict";
 pl.v.deleteCountry = {
   setupUserInterface: function () {
-    let selCountry, deleteBtn, keys;
+    let selCountry, deleteBtn;
 
     selCountry = document.getElementById( "selectCountry" );
     deleteBtn = document.getElementById( "deleteBtn" );
     pl.c.app.retrieveAllData();
-    keys = Object.keys( Country.instances );
-    console.log( "keys[0]= " + keys );
-    console.log( Object.keys( InternationalOrganisation.instances ) );
     util.fillSelectWithOptions( Country.instances, selCountry, "name", "name" );
 
     deleteBtn.addEventListener( "click",
       pl.v.deleteCountry.handleDeleteBtnClickEvent );
 
     // save all data on window/tab closed
-    window.addEventListener( "beforeunload", Country.saveAllData );
+    window.addEventListener( "beforeunload", pl.c.app.saveAllData );
 
   },
   handleDeleteBtnClickEvent: function () {
