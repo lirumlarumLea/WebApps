@@ -19,9 +19,6 @@ const CountryCodeEL = new Enumeration( {
 const ReligionsEL = new Enumeration( ["Catholic",
   "Protestant", "Orthodox", "Hindu",
   "Muslim", "Jewish"] );
-// const ReligionsEL = new Enumeration( {"Catholic": "Catholic",
-//   "Protestant": "Protestant", "Orthodox": "Orthodox", "Hindu": "Hindu",
-//   "Muslim": "Muslim", "Jewish": "Jewish" } );
 
 class Country {
   /**
@@ -43,6 +40,8 @@ class Country {
       this.code = CountryCodeEL.DE; // [1], {key}
       this.population = 1; // [1], PositiveInteger
       this.capital = new City( "default" ); // [1], City
+      this._memberOf = {}; // [*] derived map of all IntOrgs where country is
+      // member
 
     } else {
 
@@ -54,6 +53,7 @@ class Country {
         (slots._population ? slots._population : slots.population), 10 );
       this.cities = {}; // a country always has a city, namely the capital
       this.capital = slots._capital ? slots._capital : slots.capital;
+      this._memberOf = {};
 
       // [0,1], PositiveDecimal{max:100}
       if (slots.lifeExpectancy || slots._lifeExpectancy) {
@@ -70,6 +70,11 @@ class Country {
       // [1..*] map, always contains capital
       if (slots.cities || slots._cities) {
         this.cities = slots._cities ? slots._cities : slots.cities;
+      }
+
+      // semi-hidden since it's a derived property
+      if (slots._memberOf) {
+        this._memberOf = slots._memberOf;
       }
     }
   }
@@ -125,35 +130,48 @@ class Country {
     } else {
       console.log( "No countries in storage." );
     }
+    console.log( "Country data retrieved." );
   }
 
   /**
    * replaces the references in a country record with referenced objects
    * @param countryRec
-   * @returns {*}
+   * @returns {Object}
    */
   static convertRecToSlots( countryRec ) {
-    let countrySlots = util.cloneObject( countryRec ), i, tempCities;
+    let countrySlots = {};
+
+    countrySlots.name = countryRec._name ? countryRec._name : countryRec.name;
+    countrySlots.code = countryRec._code ? countryRec._code : countryRec.code;
+    countrySlots.population = parseInt(
+      (countryRec._population ?
+        countryRec._population : countryRec.population), 10 );
+
 
     // replace capital city reference with object
     countrySlots.capital = City.instances[countryRec.capitalRef];
-    delete countrySlots.capitalRef;
 
-    // cloneObject doesn't reliably clone arrays, so we have to do it manually
-    if (countryRec.religions) {
-      countrySlots.religions = (countryRec.religions).slice();
+    if (countryRec.lifeExpectancy || countryRec._lifeExpectancy) {
+      countrySlots.lifeExpectancy = parseFloat( countryRec._lifeExpectancy ?
+        countryRec._lifeExpectancy : countryRec.lifeExpectancy );
+    }
+
+    if (countryRec.religions || countryRec._religions) {
+      countrySlots.religions = countryRec._religions ?
+        countryRec._religions.slice() : countryRec.religions.slice();
     }
 
     // convert the cities map from references to objects
     if (countryRec.cityRefs) {
-      tempCities = {};
-      for (i = 0; i < countryRec.cityRefs.length; i += 1) {
+      let tempCities = {};
+      for (let i = 0; i < countryRec.cityRefs.length; i += 1) {
         tempCities[countryRec.cityRefs[i]] =
           City.instances[countryRec.cityRefs[i]];
       }
       countrySlots.cities = tempCities;
-
     }
+
+    // memberOf is set when IntOrgs are created
 
     return countrySlots;
   }
@@ -206,8 +224,7 @@ class Country {
         if (internationalOrganisation.members[j] === countryName) {
 
           internationalOrganisation.members.splice(
-            internationalOrganisation.members.indexOf(countryName), 1
-          );
+            internationalOrganisation.members.indexOf( countryName ), 1 );
         }
       }
     }
@@ -257,10 +274,9 @@ class Country {
    */
   convertObjToRec() {
     let countryRow = util.cloneObject( this ), keys, i;
-
+    console.log( "test" );
     // create capital city Id reference
     countryRow.capitalRef = this.capital.name;
-    delete countryRow.capital;
 
     if (this.religions) {
       countryRow.religions = (this.religions).slice();
@@ -273,8 +289,14 @@ class Country {
       for (i = 0; i < keys.length; i += 1) {
         countryRow.cityRefs.push( keys[i] );
       }
-      delete countryRow.cities;
     }
+
+    delete countryRow.capital;
+    delete countryRow._capital;
+    delete countryRow.cities;
+    delete countryRow._cities;
+    delete countryRow._memberOf; // is a derived property and should not be
+    // stored here. It will be restored when the IntOrgs are restored.
 
     return countryRow;
   }
@@ -389,6 +411,16 @@ class Country {
     // add all cities with their names
     keys = Object.keys( this.cities );
     str += "\n\tCities: ";
+    for (i = 0; i < keys.length; i += 1) {
+      str += keys[i];
+      if (i !== keys.length - 1) {
+        str += ", ";
+      }
+    }
+
+    // add all IntOrgs where this country is a member
+    keys = Object.keys( this._memberOf );
+    str += "\n\tMember of: ";
     for (i = 0; i < keys.length; i += 1) {
       str += keys[i];
       if (i !== keys.length - 1) {
@@ -529,39 +561,43 @@ class Country {
 
 
   static checkCapital( myCapital ) {
-    let i, keys, values;
+    let i, keys, values,
+      constraintViolation = new NoConstraintViolation( myCapital );
 
     // mandatory
     if (!myCapital) {
-      return new MandatoryValueConstraintViolation( "A country always needs" +
-        " to have a capital city. ", myCapital );
+      console.log( myCapital );
+      constraintViolation = new MandatoryValueConstraintViolation(
+        "A country always needs to have a capital city. ", myCapital );
     } else {
-      // type city
-      if (!(myCapital instanceof City)) {
-        return new RangeConstraintViolation( "A capital city has to be a city" +
-          " object." );
+      // // type city
+      // if (!(myCapital instanceof City)) {
+      //   return new RangeConstraintViolation( "A capital city has to be a city" +
+      //     " object." );
+      //
+      // } else {
+      //   // known city
+      //   if (Object.keys( City.instances ).indexOf( myCapital.name ) === -1) {
+      //     console.log(myCapital.name);
+      //     return new ReferentialIntegrityConstraintViolation( "The city " +
+      //       myCapital.name + " is unknown.", myCapital );
+      //   }
 
-      } else {
-        // known city
-        if (Object.keys( City.instances ).indexOf( myCapital.name ) === -1) {
-          console.log(myCapital.name);
-          return new ReferentialIntegrityConstraintViolation( "The city " +
-            myCapital.name + " is unknown.", myCapital );
-        }
+      constraintViolation = City.checkNameAsRefId( myCapital.name );
 
-        // unique
-        keys = Object.keys( Country.instances );
-        values = Object.values( Country.instances );
-        for (i = 0; i < keys.length; i += 1) {
-          if (myCapital.equals( values[i].capital )) {
-            return new UniquenessConstraintViolation( "A capital city has " +
-              "to be unique!", myCapital );
-          }
+      // unique
+      keys = Object.keys( Country.instances );
+      values = Object.values( Country.instances );
+      for (i = 0; i < keys.length; i += 1) {
+        if (myCapital.equals( values[i].capital )) {
+          constraintViolation = new UniquenessConstraintViolation(
+            "A capital city has to be unique!", myCapital );
         }
       }
     }
-    return new NoConstraintViolation( myCapital );
+    return constraintViolation;
   }
+
 
   set capital( newCapital ) {
     const validationResult = Country.checkCapital( newCapital );
@@ -577,6 +613,7 @@ class Country {
         this.cities[this.capital.name] = this.capital;
       }
     } else {
+      console.log( this );
       alert( validationResult.message );
       throw validationResult;
     }
@@ -685,7 +722,7 @@ class Country {
    * adds a city to this country's cities map
    * @param city - can be id (name) oder object
    */
-  addCity(city) {
+  addCity( city ) {
     let cityName;
     if (city instanceof Object) {
       cityName = city.name;
@@ -695,20 +732,24 @@ class Country {
     this.cities[cityName] = City.instances[cityName];
   }
 
-  static checkCities( myCity ) {
+  /**
+   *
+   * @param {Object} myCities - map of cities
+   * @returns {*}
+   */
+  static checkCities( myCities ) {
     let i, keysCities;
-    if (myCity) {
+    let constraintViolation = new NoConstraintViolation( myCities );
+    if (myCities) {
 
       // known cities only
-      keysCities = Object.keys( myCity );
+      keysCities = Object.keys( myCities );
+
       for (i = 0; i < keysCities; i += 1) {
-        if (Object.keys( City.instances ).indexOf( keysCities[i] ) === -1) {
-          return new ReferentialIntegrityConstraintViolation( "The city " +
-            keysCities[i].name + " is unknown.", keysCities[i] );
-        }
+        constraintViolation = City.checkNameAsRefId( keysCities[i] );
       }
     }
-    return new NoConstraintViolation( myCity );
+    return constraintViolation;
   }
 }
 

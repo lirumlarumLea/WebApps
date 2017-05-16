@@ -15,12 +15,14 @@ class InternationalOrganisation {
       // first, assign default values
       this.acronym = ""; //NonEmptyString{id}
       this.name = ""; //NonEmptyString
-      this.members = []; //Country Object array
+      this.members = []; // [*] Country Object references array
     } else {
       // if arguments were passed, set properties accordingly
       this.acronym = slots._acronym ? slots._acronym : slots.acronym;
       this.name = slots._name ? slots._name : slots.name;
-      // [*] Array of Countries in members
+
+      // [*] array of country references in members, master of bidirectional
+      // reference
       if (slots.members || slots._members) {
         this.members = (slots._members ?
           slots._members : slots.members);
@@ -129,10 +131,21 @@ class InternationalOrganisation {
    * deletes the internationalOrganisation from the instances collection
    */
   destroy() {
-    let internationalOrganisationName = this.name; //name is easier readable
-    delete InternationalOrganisation.instances[this.acronym]; //delete with ID
+    let intOrgName = this.name; //name is easier readable
+    let intOrgId = this.acronym;
+    let keys = Object.keys(Country.instances), i;
+
+    // delete all references to this organisation
+    for (i = 0; i < keys.length; i += 1) {
+      if (util.mapContains(Country.instances[keys[i]]._memberOf, intOrgId)) {
+        delete Country.instances[keys[i]]._memberOf[intOrgId];
+      }
+    }
+
+    delete InternationalOrganisation.instances[intOrgId]; //delete with ID
+
     console.log( "International Organisation " +
-      internationalOrganisationName + " deleted." );
+      intOrgName + " deleted." );
   }
 
   /**
@@ -208,6 +221,7 @@ class InternationalOrganisation {
 
   toString() {
     let str = "Acronym: " + this.acronym + "\n\tFull name: " + this.name;
+
     if (this.members) {
       str += ("\n\tMembers: " + this.members.toString());
     }
@@ -306,26 +320,26 @@ class InternationalOrganisation {
   }
 
   static
-  checkMember( myMember ) { //check single Member
-    if (!myMember) {
+  checkMember( myMemberRef ) { //check single Member
+    if (!myMemberRef) {
       return new NoConstraintViolation(); //Member is not Mandatory
     } else {
       //function checks if this ID exists
-      return Country.checkCountryId( myMember );
+      return Country.checkCountryId( myMemberRef );
     }
   }
 
   static
-  checkMembers( myMembers ) { //check Array of Members
+  checkMembers( myMemberRefs ) { //check Array of Members
     let i, constraintViolation;
-    if (!Array.isArray( myMembers ) && (myMembers !== undefined)) {
+    if (!Array.isArray( myMemberRefs ) && (myMemberRefs !== undefined)) {
       return new RangeConstraintViolation( //possibly not needed
         "The value of Members must be an array" );
     } else {
-      if ((myMembers !== undefined)) { //Members are not mandatory
-        for (i = 0; i < myMembers.length; i += 1) {
+      if ((myMemberRefs !== undefined)) { //Members are not mandatory
+        for (i = 0; i < myMemberRefs.length; i += 1) {
           constraintViolation =
-            InternationalOrganisation.checkMember( myMembers[i] );
+            InternationalOrganisation.checkMember( myMemberRefs[i] );
           if (!(constraintViolation instanceof NoConstraintViolation)) {
             return constraintViolation;
           }
@@ -335,21 +349,43 @@ class InternationalOrganisation {
     return new NoConstraintViolation();
   }
 
-  set
-  members( newMembers ) {
+  set members( newMembers ) {
     const validationResult =
       InternationalOrganisation.checkMembers( newMembers );
 
     if (validationResult instanceof NoConstraintViolation) {
       this._members = newMembers; //only valid values
+
+      // handle bidirectional referencing
+      let keys = Object.keys(Country.instances);
+      for (let i = 0; i < keys.length; i += 1) {
+        if ((this.members).includes(keys[i])) {
+        // Country is a member of IntOrg -> add reference (double references
+        // will simply be overwritten
+          Country.instances[keys[i]]._memberOf[this.acronym] = this;
+        } else {
+          // make sure there is no reference where there shouldn't be
+          delete Country.instances[keys[i]]._memberOf[this.acronym];
+        }
+      }
+
+
+      // for (let i = 0; i < this._members.length; i += 1) {
+      //   let tempMemberOf = Country.instances[this._members[i]]._memberOf;
+      //   if (!util.mapContains(tempMemberOf, this._members[i])) {
+      //     tempMemberOf[this._members[i]] = this;
+      //   }
+      //
+      //   // probably unnecessary, but just in case
+      //   Country.instances[this._members[i]]._memberOf = tempMemberOf;
+      // }
     } else {
       alert( validationResult.message );
       throw  validationResult;
     }
   }
 
-  get
-  members() {
+  get members() {
     return this._members;
   }
 }

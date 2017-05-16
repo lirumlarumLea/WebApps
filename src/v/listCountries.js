@@ -16,7 +16,7 @@ pl.v.retrieveAndListCountries = {
 
     for (i = 0; i < keys.length; i += 1) {
       key = keys[i];
-      console.log( Country.instances[key].toString() );
+      // console.log( Country.instances[key].toString() );
 
       row = table.insertRow( -1 ); // -1 adds row at the end of the table
       row.insertCell( -1 ).innerHTML = Country.instances[key].name;
@@ -37,9 +37,9 @@ pl.v.retrieveAndListCountries = {
 
         relArray = Country.instances[key].religions;
 
-        for (let i = 0; i < relArray.length; i += 1) {
-          relStr += ReligionsEL.enumLitNames[relArray[i]];
-          if (i !== relArray.length - 1) {
+        for (let j = 0; j < relArray.length; j += 1) {
+          relStr += ReligionsEL.enumLitNames[relArray[j]];
+          if (j !== relArray.length - 1) {
             relStr += ",\n";
           }
         }
@@ -48,8 +48,8 @@ pl.v.retrieveAndListCountries = {
       }
 
 
-      citiesCell = row.insertCell( -1 );
       // add all cities with their names
+      citiesCell = row.insertCell( -1 );
       keyCities = Object.keys( Country.instances[key].cities );
       citiesStr = "";
       for (j = 0; j < keyCities.length; j += 1) {
@@ -60,6 +60,21 @@ pl.v.retrieveAndListCountries = {
       }
       citiesCell.innerHTML = citiesStr;
 
+
+      // check if member of IntOgr
+      let memberOfCell = row.insertCell( -1 );
+      if (Country.instances[key]._memberOf) {
+        let membershipsArr = Object.keys(Country.instances[key]._memberOf);
+        let membershipsStr = "";
+        for (let j = 0; j < membershipsArr.length; j += 1) {
+          membershipsStr += membershipsArr[j]
+          if (j !== membershipsArr.length - 1) {
+            membershipsStr += ",\n";
+          }
+        }
+        memberOfCell.innerHTML = membershipsStr;
+        membershipsStr = "";
+      }
     }
   }
 };

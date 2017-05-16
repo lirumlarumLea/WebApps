@@ -59,6 +59,11 @@ class City {
     return constraintViolation;
   }
 
+  /**
+   *
+   * @param {String} newName - the id of a city
+   * @returns {Object}
+   */
   static checkNameAsRefId( newName ) {
     if (!City.instances[newName]) {
       return new ReferentialIntegrityConstraintViolation(
