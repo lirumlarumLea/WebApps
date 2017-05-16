@@ -27,7 +27,6 @@ class Country {
    * @throws ConstraintViolation error via setters
    */
   constructor( slots ) {
-    console.log( "constructor" );
 
     // this._name = "n.a."; // [1], NonEmptyString{id}
     // this._code = CountryCodeEL.DE; // [1], {key}
@@ -36,7 +35,6 @@ class Country {
     // this._religions = [];
 
     if (arguments.length === 0) {
-      console.log( "constructor no args" );
 
       // first, assign default values
       this.name = "n.a."; // [1], NonEmptyString{id}
@@ -48,7 +46,6 @@ class Country {
 
     } else {
 
-      console.log( "constructor args" );
       // if arguments were passed, set properties accordingly
       //try {
       this.name = slots._name ? slots._name : slots.name;
@@ -76,10 +73,10 @@ class Country {
         this.cities = slots._cities ? slots._cities : slots.cities;
       }
 
-      // semi-hidden since it's a derived property
-      if (slots._memberOf) {
-        this._memberOf = slots._memberOf;
-      }
+      // // semi-hidden since it's a derived property
+      // if (slots._memberOf) {
+      //   this._memberOf = slots._memberOf;
+      // }
     }
   }
 
@@ -91,7 +88,6 @@ class Country {
   static add( slots ) {
     let country;
     try {
-      console.log( "try add" );
       country = new Country( slots );
     } catch (e) {
       console.log( e.constructor.name + ": " + e.message );
@@ -132,6 +128,7 @@ class Country {
         slots = Country.convertRecToSlots( allCountries[keys[i]] );
         Country.add( slots );
       }
+      console.log(City.instances);
     } else {
       console.log( "No countries in storage." );
     }
@@ -154,6 +151,7 @@ class Country {
 
     // replace capital city reference with object
     countrySlots.capital = City.instances[countryRec.capitalRef];
+    console.log(countrySlots.capital);
 
     if (countryRec.lifeExpectancy || countryRec._lifeExpectancy) {
       countrySlots.lifeExpectancy = parseFloat( countryRec._lifeExpectancy ?
@@ -364,6 +362,7 @@ class Country {
       _lifeExpectancy: 89.52
     } );
 
+    console.log( Country.instances );
     Country.saveAllData();
   }
 
@@ -594,14 +593,12 @@ class Country {
     // only valid values should enter the database
     if (validationResult instanceof NoConstraintViolation) {
       this._capital = newCapital;
-      if (this.cities) {
-        if (!this.cities[this.capital.name]) {
-          this.cities[this.capital.name] = this.capital;
-          this.capital._inCountry = this;
-        }
+      this.capital._inCountry = this; // set bidirectional reference
+      if (!util.mapContains( this.cities, this._capital.name )) {
+        console.log( "adding capital" );
+        this.cities[this._capital.name] = this._capital;
       } else {
-        this.cities[this.capital.name] = this.capital;
-        this.capital._inCountry = this;
+        console.log( this.cities[this._capital.name] );
       }
     } else {
       console.log( this );
@@ -712,6 +709,12 @@ class Country {
           delete City.instances[keys[i]]._inCountry;
         }
       }
+
+      // contains capital? if no, add it automatically
+      if (this.capital &&
+        !util.mapContains( this._cities, this._capital.name )) {
+        this._cities[this._capital.name] = this._capital;
+      }
     } else {
       alert( validationResult.message );
       throw  validationResult;
@@ -738,6 +741,8 @@ class Country {
       for (i = 0; i < keysCities; i += 1) {
         constraintViolation = City.checkNameAsRefId( keysCities[i] );
       }
+
+
     }
     return constraintViolation;
   }

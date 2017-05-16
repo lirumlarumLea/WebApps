@@ -19,10 +19,10 @@ class City {
     this._inCountry = {}; // city is located in country
     // no default values added, since a nameless city makes no sense
 
-    // semi-hidden since it's a derived property
-    if (slots._inCountry) {
-      this._inCountry = slots._inCountry;
-    }
+    // // semi-hidden since it's a derived property
+    // if (slots._inCountry) {
+    //   this._inCountry = slots._inCountry;
+    // }
   }
 
   set name( newName ) {
@@ -110,7 +110,6 @@ class City {
       City.instances[tempCity.name] = tempCity;
       console.log( "City " + tempCity.name + " added to" +
         " database." );
-      console.log(tempCity);
     } else {
       console.log( "Error when creating city." );
     }
@@ -237,6 +236,8 @@ class City {
     City.add( { _name: "Novosibirsk" } );
     City.add( { _name: "Paris" } );
     City.add( { _name: "Monaco" } );
+
+    console.log(City.instances);
   }
 
   static clearAllData() {
