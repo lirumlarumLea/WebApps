@@ -110,6 +110,7 @@ class City {
       City.instances[slots.name] = tempCity;
       console.log( "City " + tempCity.name + " added to" +
         " database." );
+      console.log(tempCity);
     } else {
       console.log( "Error when creating city." );
     }

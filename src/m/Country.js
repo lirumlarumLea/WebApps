@@ -27,6 +27,7 @@ class Country {
    * @throws ConstraintViolation error via setters
    */
   constructor( slots ) {
+    console.log( "constructor" );
 
     // this._name = "n.a."; // [1], NonEmptyString{id}
     // this._code = CountryCodeEL.DE; // [1], {key}
@@ -35,6 +36,8 @@ class Country {
     // this._religions = [];
 
     if (arguments.length === 0) {
+      console.log( "constructor no args" );
+
       // first, assign default values
       this.name = "n.a."; // [1], NonEmptyString{id}
       this.code = CountryCodeEL.DE; // [1], {key}
@@ -45,6 +48,7 @@ class Country {
 
     } else {
 
+      console.log( "constructor args" );
       // if arguments were passed, set properties accordingly
       //try {
       this.name = slots._name ? slots._name : slots.name;
@@ -67,7 +71,7 @@ class Country {
           slots._religions : slots.religions;
       }
 
-      // [1..*] map, always contains capital
+      // [1..*] map, always contains capital, master for city._inCountry
       if (slots.cities || slots._cities) {
         this.cities = slots._cities ? slots._cities : slots.cities;
       }
@@ -87,6 +91,7 @@ class Country {
   static add( slots ) {
     let country;
     try {
+      console.log( "try add" )
       country = new Country( slots );
     } catch (e) {
       console.log( e.constructor.name + ": " + e.message );
@@ -273,7 +278,6 @@ class Country {
    */
   convertObjToRec() {
     let countryRow = util.cloneObject( this ), keys, i;
-    console.log( "test" );
     // create capital city Id reference
     countryRow.capitalRef = this.capital.name;
 
@@ -514,7 +518,6 @@ class Country {
   set code( newCode ) {
     let validationResult = Country.checkCode( newCode );
 
-    //noinspection JSLint
     if (validationResult instanceof NoConstraintViolation) {
       this._code = newCode; // only valid values should enter the database
     } else {
@@ -594,9 +597,11 @@ class Country {
       if (this.cities) {
         if (!this.cities[this.capital.name]) {
           this.cities[this.capital.name] = this.capital;
+          this.capital._inCountry = this;
         }
       } else {
         this.cities[this.capital.name] = this.capital;
+        this.capital._inCountry = this;
       }
     } else {
       console.log( this );
@@ -690,30 +695,21 @@ class Country {
   }
 
   set cities( newCities ) {
-    //const validationResult = Country.checkCities( newCities );
-    // only valid values should enter the database
-    //if (validationResult instanceof NoConstraintViolation) {
-    //  this._cities = Object.assign( {}, newCities, this._cities );
-    //} else {
-    //  alert( validationResult.message );
-    //  throw validationResult;
-    //}
-    const validationResult =
-      Country.checkCities( newCities );
+    const validationResult = Country.checkCities( newCities );
 
     if (validationResult instanceof NoConstraintViolation) {
-      this._cities = Object.assign( {}, newCities, this._cities );
+      this._cities = newCities;
       //only valid values
 
       // handle bidirectional referencing
-      let keys = Object.keys(City.instances);
+      let keys = Object.keys( City.instances );
       for (let i = 0; i < keys.length; i += 1) {
-        if ((this.cities).includes(keys[i])) {
+        if ((util.mapContains( this._cities, keys[i] ))) {
           // City is in country -> add reference
-          City.instances[keys[i]]._inCountry[this.name] = this;
+          City.instances[keys[i]]._inCountry = this;
         } else {
           // make sure there is no reference where there shouldn't be
-          delete City.instances[keys[i]]._inCountry[this.name];
+          delete City.instances[keys[i]]._inCountry;
         }
       }
     } else {
@@ -724,20 +720,6 @@ class Country {
 
   get cities() {
     return this._cities;
-  }
-
-  /**
-   * adds a city to this country's cities map
-   * @param city - can be id (name) oder object
-   */
-  addCity( city ) {
-    let cityName;
-    if (city instanceof Object) {
-      cityName = city.name;
-    } else {
-      cityName = city;
-    }
-    this.cities[cityName] = City.instances[cityName];
   }
 
   /**
