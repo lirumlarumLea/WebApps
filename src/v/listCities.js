@@ -16,7 +16,13 @@ pl.v.retrieveAndListCities = {
     for (i = 0; i < keys.length; i += 1) {
       key = keys[i];
       row = table.insertRow( -1 ); // -1 adds row at the end of the table
-      row.insertCell( -1 ).innerHTML = key;
+      row.insertCell( -1 ).innerHTML = City.instances[key]._name;
+
+      // check if in Country
+      let inCountryCell = row.insertCell( -1 );
+      if (City.instances[key]._inCountry) {
+        inCountryCell.innerHTML = City.instances[key]._inCountry.name;
+      }
     }
   }
 };

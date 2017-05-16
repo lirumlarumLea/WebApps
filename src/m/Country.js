@@ -690,13 +690,35 @@ class Country {
   }
 
   set cities( newCities ) {
-    const validationResult = Country.checkCities( newCities );
+    //const validationResult = Country.checkCities( newCities );
     // only valid values should enter the database
+    //if (validationResult instanceof NoConstraintViolation) {
+    //  this._cities = Object.assign( {}, newCities, this._cities );
+    //} else {
+    //  alert( validationResult.message );
+    //  throw validationResult;
+    //}
+    const validationResult =
+      Country.checkCities( newCities );
+
     if (validationResult instanceof NoConstraintViolation) {
       this._cities = Object.assign( {}, newCities, this._cities );
+      //only valid values
+
+      // handle bidirectional referencing
+      let keys = Object.keys(City.instances);
+      for (let i = 0; i < keys.length; i += 1) {
+        if ((this.cities).includes(keys[i])) {
+          // City is in country -> add reference
+          City.instances[keys[i]]._inCountry[this.name] = this;
+        } else {
+          // make sure there is no reference where there shouldn't be
+          delete City.instances[keys[i]]._inCountry[this.name];
+        }
+      }
     } else {
       alert( validationResult.message );
-      throw validationResult;
+      throw  validationResult;
     }
   }
 

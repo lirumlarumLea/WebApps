@@ -13,9 +13,16 @@ class City {
    *  ##########################################################################
    */
 
-  constructor( name ) {
-    this.name = name; // name[1] NonEmptyString {id}
+  constructor( slots ) {
+    this.name = slots._name ? slots._name : slots.name;
+    // name[1] NonEmptyString {id}
+    this._inCountry = {}; // city is located in country
     // no default values added, since a nameless city makes no sense
+
+    // semi-hidden since it's a derived property
+    if (slots._inCountry) {
+      this._inCountry = slots._inCountry;
+    }
   }
 
   set name( newName ) {
@@ -87,21 +94,21 @@ class City {
 
   /**
    * adds city to local storage
-   * @param cityName
+   * @param slots
    */
-  static add( cityName ) {
+  static add( slots ) {
     let tempCity;
 
     try {
-      tempCity = new City( cityName );
+      tempCity = new City( slots );
     } catch (e) {
       tempCity = null;
       console.log( e.constructor.name + ": " + e.message );
     }
 
     if (tempCity) {
-      City.instances[cityName] = tempCity;
-      console.log( "City " + City.instances[cityName].name + " added to" +
+      City.instances[slots.name] = tempCity;
+      console.log( "City " + tempCity.name + " added to" +
         " database." );
     } else {
       console.log( "Error when creating city." );
@@ -118,7 +125,7 @@ class City {
   static retrieveAllData() {
     console.log( "City data retrieval entered." );
 
-    let allCitiesString = "{}", allCities, keys, i;
+    let allCitiesString = "{}", allCities, keys, i, slots;
     try {
       // if (localStorage.getItem( "cities" ) !== "{}") {
       allCitiesString = localStorage.getItem( "cities" );
@@ -137,11 +144,25 @@ class City {
       // creates new city objects according to the data and adds them to the
       // instances collection
       for (i = 0; i < keys.length; i += 1) {
-        City.add( keys[i] );
+        slots = City.convertRecToSlots( allCities[keys[i]] );
+        City.add( slots );
       }
     } else {
       console.log( "No cities in storage." );
     }
+  }
+
+  /**
+   * replaces the references in a country record with referenced objects
+   * @param cityRec
+   * @returns {Object}
+   */
+  static convertRecToSlots( cityRec ) {
+    let citySlots = {};
+
+    citySlots.name = cityRec._name ? cityRec._name : cityRec.name;
+
+    return citySlots;
   }
 
   /**
@@ -206,15 +227,15 @@ class City {
    * adds some cities to the app so functionality can be tested
    */
   static createTestData() {
-    City.add( "Berlin" );
-    City.add( "Frankfurt" );
-    City.add( "Hamburg" );
-    City.add( "Lyon" );
-    City.add( "Marseilles" );
-    City.add( "Moscow" );
-    City.add( "Novosibirsk" );
-    City.add( "Paris" );
-    City.add( "Monaco" );
+    City.add( { _name: "Berlin" } );
+    City.add( { _name: "Frankfurt" } );
+    City.add( { _name: "Hamburg" } );
+    City.add( { _name: "Lyon" } );
+    City.add( { _name: "Marseilles" } );
+    City.add( { _name: "Moscow" } );
+    City.add( { _name: "Novosibirsk" } );
+    City.add( { _name: "Paris" } );
+    City.add( { _name: "Monaco" } );
   }
 
   static clearAllData() {
