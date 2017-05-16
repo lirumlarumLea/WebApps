@@ -91,7 +91,7 @@ class Country {
   static add( slots ) {
     let country;
     try {
-      console.log( "try add" )
+      console.log( "try add" );
       country = new Country( slots );
     } catch (e) {
       console.log( e.constructor.name + ": " + e.message );
@@ -184,7 +184,7 @@ class Country {
    * the information for a country is updated according to the passed values
    */
   update( slots ) {
-    let oldCountry = util.cloneObject( Country.instances[this.name] );
+    let oldCountry = Country.instances[this.name];
     let newCountry;
 
     // to avoid UniquenessConstraintViolation
