@@ -67,7 +67,7 @@ pl.v.retrieveAndListCountries = {
         let membershipsArr = Object.keys(Country.instances[key]._memberOf);
         let membershipsStr = "";
         for (let j = 0; j < membershipsArr.length; j += 1) {
-          membershipsStr += membershipsArr[j]
+          membershipsStr += membershipsArr[j];
           if (j !== membershipsArr.length - 1) {
             membershipsStr += ",\n";
           }

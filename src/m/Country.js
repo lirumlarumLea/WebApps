@@ -269,7 +269,7 @@ class Country {
    * replaces all the objects in a country object with reference values and
    * returns the resulting object
    *
-   * @returns {*}
+   * @returns {Object}
    */
   convertObjToRec() {
     let countryRow = util.cloneObject( this ), keys, i;
@@ -569,19 +569,6 @@ class Country {
       constraintViolation = new MandatoryValueConstraintViolation(
         "A country always needs to have a capital city. ", myCapital );
     } else {
-      // // type city
-      // if (!(myCapital instanceof City)) {
-      //   return new RangeConstraintViolation( "A capital city has to be a city" +
-      //     " object." );
-      //
-      // } else {
-      //   // known city
-      //   if (Object.keys( City.instances ).indexOf( myCapital.name ) === -1) {
-      //     console.log(myCapital.name);
-      //     return new ReferentialIntegrityConstraintViolation( "The city " +
-      //       myCapital.name + " is unknown.", myCapital );
-      //   }
-
       constraintViolation = City.checkNameAsRefId( myCapital.name );
 
       // unique
