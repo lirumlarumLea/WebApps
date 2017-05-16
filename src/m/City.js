@@ -107,7 +107,7 @@ class City {
     }
 
     if (tempCity) {
-      City.instances[tempCity._name] = tempCity;
+      City.instances[tempCity.name] = tempCity;
       console.log( "City " + tempCity.name + " added to" +
         " database." );
       console.log(tempCity);
