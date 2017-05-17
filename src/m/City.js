@@ -13,9 +13,17 @@ class City {
    *  ##########################################################################
    */
 
-  constructor( name ) {
-    this.name = name; // name[1] NonEmptyString {id}
-    // no default values added, since a nameless city makes no sense
+  constructor( slots ) {
+    if (arguments.length === 0) {
+      // first, assign default values
+      this.name = "n.a."; // [1], NonEmptyString{id}
+
+    } else {
+
+      // if arguments were passed, set properties accordingly
+      //try {
+      this.name = slots._name ? slots._name : slots.name;
+    }
   }
 
   set name( newName ) {
@@ -51,7 +59,7 @@ class City {
       if (!newName) {
         constraintViolation = new MandatoryValueConstraintViolation(
           "A city always needs to have a name.", newName );
-      } else if (Object.keys( City.instances ).indexOf( newName ) !== -1) {
+      } else if (City.instances[newName]) {
         constraintViolation = new UniquenessConstraintViolation( "A city's" +
           " name has to be unique.", newName );
       }
@@ -87,21 +95,21 @@ class City {
 
   /**
    * adds city to local storage
-   * @param cityName
+   * @param slots
    */
-  static add( cityName ) {
+  static add( slots ) {
     let tempCity;
 
     try {
-      tempCity = new City( cityName );
+      tempCity = new City( slots );
     } catch (e) {
       tempCity = null;
       console.log( e.constructor.name + ": " + e.message );
     }
 
     if (tempCity) {
-      City.instances[cityName] = tempCity;
-      console.log( "City " + City.instances[cityName].name + " added to" +
+      City.instances[tempCity.name] = tempCity;
+      console.log( "City " + tempCity.name + " added to" +
         " database." );
     } else {
       console.log( "Error when creating city." );
@@ -118,7 +126,7 @@ class City {
   static retrieveAllData() {
     console.log( "City data retrieval entered." );
 
-    let allCitiesString = "{}", allCities, keys, i;
+    let allCitiesString = "{}", allCities, keys, i, slots;
     try {
       // if (localStorage.getItem( "cities" ) !== "{}") {
       allCitiesString = localStorage.getItem( "cities" );
@@ -137,11 +145,18 @@ class City {
       // creates new city objects according to the data and adds them to the
       // instances collection
       for (i = 0; i < keys.length; i += 1) {
-        City.add( keys[i] );
+        slots = City.convertRecToSlots( allCities[keys[i]] );
+        City.add( slots );
       }
     } else {
       console.log( "No cities in storage." );
     }
+  }
+
+  static convertRecToSlots( cityRec ) {
+    let citySlots = {};
+    citySlots.name = cityRec._name ? cityRec._name : cityRec.name;
+    return citySlots;
   }
 
   /**
@@ -184,6 +199,8 @@ class City {
   static saveAllData() {
     let allCitiesString, error = false;
 
+
+
     try {
       allCitiesString = JSON.stringify( City.instances );
       localStorage.setItem( "cities", allCitiesString );
@@ -201,20 +218,19 @@ class City {
     }
   }
 
-
   /**
    * adds some cities to the app so functionality can be tested
    */
   static createTestData() {
-    City.add( "Berlin" );
-    City.add( "Frankfurt" );
-    City.add( "Hamburg" );
-    City.add( "Lyon" );
-    City.add( "Marseilles" );
-    City.add( "Moscow" );
-    City.add( "Novosibirsk" );
-    City.add( "Paris" );
-    City.add( "Monaco" );
+    City.add( { _name: "Berlin" } );
+    City.add( { _name: "Frankfurt" } );
+    City.add( { _name: "Hamburg" } );
+    City.add( { _name: "Lyon" } );
+    City.add( { _name: "Marseilles" } );
+    City.add( { _name: "Moscow" } );
+    City.add( { _name: "Novosibirsk" } );
+    City.add( { _name: "Paris" } );
+    City.add( { _name: "Monaco" } );
   }
 
   static clearAllData() {

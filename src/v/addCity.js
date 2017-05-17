@@ -39,13 +39,18 @@ pl.v.addCity = {
     const inputForm = document.forms["cityInput"],
       newName = inputForm["cityName"].value;
 
+    const slots = {
+      name: inputForm["cityName"].value
+    };
+
     inputForm["cityName"].setCustomValidity(
-      City.checkNameAsId( newName ).message );
+      City.checkNameAsId( slots.name ).message );
 
     if (inputForm.checkValidity()) {
-      City.add( newName );
+      City.add( slots );
+      console.log("1");
       alert( "New city added:\n" +
-        City.instances[newName].toString() );
+        City.instances[slots.name].toString() );
       inputForm.reset();
     }
   }
