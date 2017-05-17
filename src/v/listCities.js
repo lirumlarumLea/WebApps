@@ -17,6 +17,21 @@ pl.v.retrieveAndListCities = {
       key = keys[i];
       row = table.insertRow( -1 ); // -1 adds row at the end of the table
       row.insertCell( -1 ).innerHTML = key;
+
+      // check if inCountry
+      let inCountryCell = row.insertCell( -1 );
+      if (City.instances[key]._inCountry) {
+        let inCountryArr = Object.keys(City.instances[key]._inCountry);
+        let inCountryStr = "";
+        for (let j = 0; j < inCountryArr.length; j += 1) {
+          inCountryStr += inCountryArr[j];
+          if (j !== inCountryArr.length - 1) {
+            inCountryStr += ",\n";
+          }
+        }
+        inCountryCell.innerHTML = inCountryStr;
+        inCountryStr = "";
+      }
     }
   }
 };

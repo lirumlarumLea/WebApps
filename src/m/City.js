@@ -17,12 +17,19 @@ class City {
     if (arguments.length === 0) {
       // first, assign default values
       this.name = "n.a."; // [1], NonEmptyString{id}
+      this._inCountry = {};
 
     } else {
 
       // if arguments were passed, set properties accordingly
       //try {
       this.name = slots._name ? slots._name : slots.name;
+      this._inCountry = {};
+
+      // semi-hidden since it's a derived property
+      if (slots._inCountry) {
+        this._inCountry = slots._inCountry;
+      }
     }
   }
 

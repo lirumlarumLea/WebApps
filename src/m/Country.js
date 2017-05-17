@@ -227,6 +227,13 @@ class Country {
         }
       }
     }
+
+    // delete all references to this country
+    for (i = 0; i < keys.length; i += 1) {
+      if (util.mapContains(City.instances[keys[i]]._inCountry, countryName)) {
+        delete City.instances[keys[i]]._inCountry[countryName];
+      }
+    }
     delete Country.instances[countryName];
 
     console.log( "Country " + countryName + " deleted." );
@@ -317,7 +324,7 @@ class Country {
       _capital: City.instances["Berlin"],
       _population: 80854408,
       _lifeExpectancy: 80.57,
-      _religions: [ReligionsEL.CATHOLIC],
+      _religions: [ReligionsEL["CATHOLIC"]],
       _cities: {
         "Hamburg": City.instances["Hamburg"],
         "Frankfurt": City.instances["Frankfurt"]
@@ -693,7 +700,21 @@ class Country {
     const validationResult = Country.checkCities( newCities );
     // only valid values should enter the database
     if (validationResult instanceof NoConstraintViolation) {
-      this._cities = Object.assign( {}, newCities, this._cities );
+      this._cities = newCities;
+      //this._cities = Object.assign( {}, newCities, this._cities );
+      // handle bidirectional referencing
+      let citiesKeys = Object.keys(City.instances);
+      for (let i = 0; i < citiesKeys.length; i += 1) {
+          if ((Object.keys( this.cities )).includes( citiesKeys[i] )) {
+            console.log( "if" );
+            //City.instances[citiesKeys[i]]._inCountry[this.name] = this;
+          } else {
+            console.log( "else" );
+            //make sure there is no reference where there shouldn't be
+            //delete City.instances[citiesKeys[i]]._inCountry[this.name];
+          }
+      }
+
     } else {
       alert( validationResult.message );
       throw validationResult;

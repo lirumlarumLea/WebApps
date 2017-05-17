@@ -355,13 +355,12 @@ class InternationalOrganisation {
 
     if (validationResult instanceof NoConstraintViolation) {
       this._members = newMembers; //only valid values
-
       // handle bidirectional referencing
       let keys = Object.keys(Country.instances);
       for (let i = 0; i < keys.length; i += 1) {
         if ((this.members).includes(keys[i])) {
-        // Country is a member of IntOrg -> add reference (double references
-        // will simply be overwritten
+          // Country is a member of IntOrg -> add reference (double references
+          // will simply be overwritten
           Country.instances[keys[i]]._memberOf[this.acronym] = this;
         } else {
           // make sure there is no reference where there shouldn't be
