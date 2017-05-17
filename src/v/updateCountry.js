@@ -54,7 +54,7 @@ pl.v.updateCountry = {
     } );
 
     formObj["cReligions"].addEventListener( "input", function () {
-      let values = formObj.cReligions.childNodes;
+      let values = document.getElementById( "cReligions" ).childNodes;
       let relArr = [], i;
       for (i = 5; i < values.length; i += 1) {
         if (values[i].firstChild.checked) {
@@ -86,7 +86,7 @@ pl.v.updateCountry = {
       pl.v.updateCountry.handleCountrySelectEvent );
 
     // save new country data
-    formObj.saveBtn.addEventListener( "click",
+    document.getElementById( "saveBtn" ).addEventListener( "click",
       pl.v.updateCountry.handleSaveBtnClickEvent );
 
     // save all data when window/tab is closed
@@ -115,7 +115,7 @@ pl.v.updateCountry = {
       // for religions
       let relArr = country.religions;
       if (relArr) {
-        let values = formObj.cReligions.elements, i, j;
+        let values = document.getElementById( "cReligions" ).elements, i, j;
 
         for (i = 0; i < relArr.length; i += 1) {
           for (j = 0; j < values.length; j += 1) {
