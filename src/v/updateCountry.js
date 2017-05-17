@@ -154,8 +154,8 @@ pl.v.updateCountry = {
     let userConfirmed;
     const formObj = document.forms["countryUpdate"];
 
-    slots.name = formObj.selName.value;
-    slots.code = formObj.cCode.value;
+    slots.name = document.getElementById( "cName" ).value;
+    slots.code = document.getElementById( "cCode" ).value;
     slots.capital = City.instances[formObj["cCapital"].value];
     slots.population = document.getElementById( "cPopulation" ).value;
     // optional value
@@ -164,7 +164,7 @@ pl.v.updateCountry = {
     }
 
     // for religions
-    let values = formObj.cReligions.childNodes;
+    let values = document.getElementById( "cReligions" ).childNodes;
     let relArr = [], i;
     for (i = 5; i < values.length; i += 1) {
       if (values[i].firstChild.checked) {
